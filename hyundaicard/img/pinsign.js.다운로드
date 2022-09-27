@@ -1,0 +1,380 @@
+
+
+function PINsignRequestNonce() {
+    var nonce = "";
+    $.ajax({
+        url: PINsignConfig.NONCE_URL,
+        method: "GET",
+        async: false,
+        success: function (res) {
+            nonce = res.trim();
+        },
+        error: function (e) {
+            console.log("PINsignRequestNonce error : " + e.toString());
+        }
+    });
+
+    return nonce;
+}
+
+(function(jQuery,us,GLOBAL){
+    var $ = jQuery;
+    var _ = us;
+    function promiseToComplete(p, complete) {
+        if(complete == undefined)
+            return p;
+
+        p.then(function (res) {
+            PINsignProgressFinish();
+            complete({data: res})
+        })['catch'](function (e) {
+            var error = PINsign.ID2Error.toID2Error(e);
+            PINsignProgressFinish();
+            complete({error: error});
+        });
+    }
+
+
+    PINsign.revoke = function(id2key,complete) {
+        var p = PINsign.Service.getBerry(id2key)
+            .then(function(berryInfo){
+                return PINsign.Service.revokeBerry(berryInfo.berry);
+            });
+
+        return promiseToComplete(p,complete);
+    };
+    PINsign.revokeBerry = function(berry,complete) {
+        var p = PINsign.Service.revokeBerry(berry)
+            .then(function(res){
+                return PINsign.Service.berryList();
+            })
+            .then(function(berries){
+                var payload = PINsign.Util.expandCompactJwx(berry).payload;
+                var berryInfo = PINsign.Util.payloadToBerryInfo(JSON.parse(payload));
+
+                var findIt = _.find(berries,function(item){
+                    if(item.serialNumber === berryInfo.serialNumber && item.issuer.uid === berryInfo.issuer.uid && item.issuer.issuerSubject === berryInfo.issuer.issuerSubject)
+                        return true;
+                    return false;
+                });
+                if(findIt !==  undefined) {
+                    return PINsign.Service.delBerry(berryInfo.id);
+                }else{
+                    return Promise.resolve({code:0});
+                }
+            });
+        return promiseToComplete(p,complete);
+    };
+
+    PINsign.changePin = function(id2key, oldSecurePin, newSecurePin, complete) {
+        var p = PINsign.Service.getBerry(id2key)
+            .then(function(berryInfo){
+                return PINsign.Service.changePin(berryInfo,oldSecurePin,newSecurePin);
+            });
+        return promiseToComplete(p,complete);
+    };
+
+    PINsign.login = function (id2key, securePin, data, complete, options) {
+        options = options || {};
+        options.autoRenew = true;
+        return PINsign.sign(id2key, securePin, data, complete, options);
+    };
+
+    PINsign.sign = function (id2key, securePin, data, complete, options) {
+
+        PINsign.Logger.log("PINsign.sign >> ",options);
+        if (data === null || data === undefined || data === "") {
+            var error = new PINsign.ID2Error({
+                code: PINsign.ErrorCode.UNKNOWN_ERROR,
+                message: "sign data is empty"
+            });
+
+            return complete({error: error});
+        }
+
+        PINsignProgressStart();
+
+        var addHeader = {};
+
+        options = options || {};
+        if(options.autoRenew === undefined)
+            options.autoRenew = false;
+        if(options.addNonceToJws === undefined)
+            options.addNonceToJws = false;
+
+        if(addHeader.sat === undefined) {
+            addHeader.sat = PINsign.Requester.serverTime();
+        }
+
+        var p = PINsign.list({id2key:id2key})
+            .then(function (berries) {
+                if(berries.length <= 0) {
+                    return Promise.reject(PINsign.ID2Error.createByCode(PINsign.ErrorCode.BERRY_NOT_EXIST));
+                }
+
+                var berry = berries[0];
+                var issueDate = berry.issueDate;
+                if(PINsignConfig.USE_CONNECTED === true && PINsign.Util.isConnectedStoreType(berry.storeType)) {
+                    return new Promise(function(resolve,reject){
+                        PINsign.ConnAdapter.login(id2key,securePin,data,function(data) {
+                            resolve(data.data);
+                            },options);
+                    });
+                }
+
+
+                var addHeader = {};
+
+                var renewStatus = "";
+                var signPromise = null;
+
+                if ( options.autoRenew === true && PINsign.Util.needRenew(issueDate) === true) {
+                    signPromise = PINsign.Service.genRenewReq(id2key, securePin)
+                        .then(function (renewReq) {
+                            return PINsign.Service.renewBerry(renewReq);
+                        })
+                        .then(function (berry) {
+                            return PINsign.Service.replaceBerry(id2key, securePin, berry);
+                        })
+                        .then(function (res) {
+                            return PINsign.Service.getBerry(res.id2key);
+                        })
+                        .then(function (berry) {
+                            addHeader = PINsign.Util.makeAddHeader({},options);
+                            renewStatus = "success";
+                            return PINsign.Service.sign(berry, securePin, data, addHeader);
+                        })['catch'](function (e) {
+                            console.log("renew error : " + JSON.stringify(e));
+                            renewStatus = "fail : "+e.message || JSON.stringify(e);
+                            addHeader = PINsign.Util.makeAddHeader({},options);
+                            return PINsign.Service.sign(berry, securePin, data, addHeader);
+                        });
+
+                } else {
+                    addHeader = PINsign.Util.makeAddHeader({},options);
+                    signPromise = PINsign.Service.sign(berry, securePin, data, addHeader);
+                }
+
+                return signPromise.then(function(signResult){
+                    signResult.renewStatus = renewStatus;
+                    return signResult;
+                });
+
+            })['catch'](function (e) {
+            if (PINsign.ID2Error.isID2Error(e) === false) {
+                e = PINsign.ID2Error.toID2Error(e);
+            }
+
+            e.berry = e.berry || {id: id2key};
+
+            return Promise.reject(e);
+
+        });
+
+        return promiseToComplete(p, complete);
+
+    };
+
+    PINsign.remove = function (id2key, complete) {
+
+        if (typeof id2key == "string") {
+
+            var pp = PINsign.Service.delBerry(id2key);
+            return promiseToComplete(pp, complete);
+        }
+
+        var uid = id2key.uid || "";
+        var profile = id2key.profile || "";
+
+        if (uid === "") {
+            var error = { code: -1, message: 'invalid parameter' };
+            complete({error: error});
+            return;
+        }
+
+        function getBerryIdList(berries,uid,profile,setter) {
+            var idList = [];
+            for (var i = 0; i < berries.length; i++) {
+
+                var berry = berries[i];
+                if (berry.issuer.uid === undefined) {
+                    continue;
+                }
+                if(uid !== berry.issuer.uid) {
+                    continue;
+                }
+                if(profile !== "" && profile !== berry.issuer.profile) {
+                    continue;
+                }
+
+                var targetId = berry.id;
+                if(setter !== undefined) {
+                    targetId = setter(berry);
+                }
+                idList.push(targetId);
+            }
+            return idList;
+        }
+
+
+        var successResult = {code: 0};
+        var p = PINsign.Service.berryList()
+
+            .then(function (berries) {
+
+                var idList = getBerryIdList(berries,uid,profile);
+
+                if (idList.length > 0) {
+                    return PINsign.Service.delBerry(idList);
+                }
+                return Promise.resolve(successResult);
+            })
+            .then(function(localRemoveResult){
+                if(PINsign.ConnAdapter.check() !== true) {
+                    return Promise.resolve(localRemoveResult);
+                }
+
+                return PINsign.ConnAdapter.berryList({uid:uid,profile:profile})
+                    .then(function(berries){
+                        var idList = getBerryIdList(berries,uid,profile,function(item) { return item.fingerprint; });
+                        function removeWrapper(ids,idx) {
+                            if(ids.length <= idx) {
+                                return Promise.resolve(successResult);
+                            }
+                            return PINsign.ConnAdapter.remove(ids[idx])
+                                .then(function(){
+                                    return removeWrapper(ids,idx+1);
+                                });
+                        }
+                        return removeWrapper(idList,0);
+                    });
+            });
+
+        //todo : connected
+        return promiseToComplete(p, complete);
+    };
+
+    PINsign.issueNew = function(name,refValue,authCode,pin,complete) {
+        return PINsign.issue(name,refValue,authCode,false,pin,complete);
+    };
+    PINsign.issueAdd = function(name,refValue,authCode,pin,complete) {
+        return PINsign.issue(name,refValue,authCode,true,pin,complete);
+    };
+
+    // {name,refValue,authCode,existSeed}
+    PINsign.issue = function (name,refValue,authCode,existSeed,securePin, complete) {
+
+        if(existSeed === false && PINsign.Util.checkPinValidity(securePin) === false) {
+            return promiseToComplete(Promise.reject(PINsign.ID2Error.createByCode(PINsign.ErrorCode.PIN_VALITITY_FAIL)),complete);
+        }
+
+        if(typeof name === "object" && arguments.length === 3) { //{info}, pin ,callback
+            var objParam = arguments[0];
+            securePin = arguments[1];
+            complete = arguments[2];
+            name = objParam.name;
+            refValue = objParam.refValue;
+            authCode = objParam.authCode;
+            existSeed = objParam.existSeed;
+        }
+
+        PINsignProgressStart();
+
+        var p = PINsign.Service.genBerryReq(name,refValue,authCode,existSeed,securePin)
+            .then(function (berryReq) {
+                return PINsign.Service.issueBerry(berryReq.data);
+            })
+            .then(function (berry) {
+                return PINsign.Service.storeBerry(name,securePin,berry);
+            });
+
+        return promiseToComplete(p, complete);
+
+    };
+
+    PINsign.renew = function (id2key, securePin, complete) {
+
+        PINsignProgressStart();
+
+        var p = PINsign.Service.genRenewReq(id2key, securePin)
+            .then(function (renewReq) {
+                return PINsign.Service.renewBerry(renewReq);
+            })
+            .then(function (berry) {
+                return PINsign.Service.replaceBerry(id2key, securePin, berry);
+            })
+            .then(function (res) {
+                return {id2key: res.id2key};
+            });
+
+        return promiseToComplete(p, complete);
+
+    };
+
+    PINsign.info = function(id,complete) {
+        var p = PINsign.Service.getBerry(id);
+        return promiseToComplete(p, complete);
+
+    };
+
+    PINsign.list = function (filter, complete) {
+        filter = filter || {};
+        filter.detail = false;
+
+        var pBrowser = PINsign.Service.berryList(filter);
+        var pConnected = PINsign.ConnAdapter.berryList(filter);
+
+
+        var p = Promise.all([pBrowser,pConnected || Promise.resolve([])])
+            .then(function(res){
+                var browserList = res[0];
+                var connectedList = res[1];
+                var totalList = browserList.concat(connectedList);
+                return PINsign.BerryFilter.filter(totalList,filter || {});
+            })['catch'](function(e){
+            console.log(e);
+        });
+
+        return promiseToComplete(p, complete);
+
+    };
+    PINsign.issueList = function(id2key,securePin,complete){
+        var p = PINsign.Service.getBerry(id2key)
+            .then(function(berry){
+                return PINsign.Service.issueList(berry,securePin);
+            });
+        return promiseToComplete(p, complete);
+    };
+
+    PINsign.isSupport = function () {
+        return PINsign.Util.isSupport();
+    };
+
+    function initExportModule(GLOBAL) {
+        GLOBAL.ID2Login = PINsign.login;
+        GLOBAL.ID2Sign = PINsign.sign;
+        GLOBAL.ID2Del = PINsign.remove;
+        GLOBAL.ID2Issue = PINsign.issue;
+        GLOBAL.ID2Renew = PINsign.renew;
+        GLOBAL.ID2List = PINsign.list;
+        GLOBAL.ID2IsSupport = PINsign.isSupport;
+        GLOBAL.ID2ProgressStart = PINsignProgressStart;
+        GLOBAL.ID2ProgressFinish = PINsignProgressFinish;
+        GLOBAL.ID2RequestNonce = PINsignRequestNonce;
+    }
+    initExportModule(window);
+})(jQuery,window.pinsignus || _,window);
+
+
+
+$(document).ready(function () {
+    if (location.hostname != "localhost" && location.hostname != "127.0.0.1") {
+        if (location.protocol == "http:") {
+            //alert("ID²서비스는 보안서버(https) 에서 사용해야합니다.");
+            //location.href = "https://"+location.host + location.pathname;
+        }
+    }
+
+    PINsign.init();
+
+});

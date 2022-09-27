@@ -1,0 +1,337 @@
+@charset "utf-8";
+
+@font-face {
+    font-family: 'LeferiPoint-BlackA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+  font-family: 'LeferiBaseType-RegularA';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiBaseType-RegularA.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+html{overflow:hidden;}
+*{margin:0; padding:0; border:0; font-family: 'LeferiPoint-BlackA';}
+.cf:after{content:""; display:block; clear:both;}
+.cb{clear:both;}
+.fl{float:left;}
+.fr{float:right;}
+li{list-style:none;}
+a{text-decoration:none; color: #000;}
+html{width:100%; height:100%; overflow: hidden;} 
+
+#sectionWrap{width: calc(1920px*11); height: 977px;}
+.section{position: relative; width: 1920px; height: 100%; float: left; color: #fff; text-align: center;}
+#section1{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section2{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section3{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section4{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative; overflow:hidden;}
+#section5{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section6{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section7{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section8{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section9{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+#section10{width:1920px; height:100%; background: url(../img/dot.png)no-repeat; background-size: 1920px; position:relative;}
+
+:root {
+    --step--2: clamp(3.13rem, 2.62rem + 2.51vw, 5.76rem);
+    --step--1: clamp(3.75rem, 3.09rem + 3.29vw, 7.20rem);
+    --step-0: clamp(4.50rem, 3.64rem + 4.29vw, 9.00rem);
+  }
+
+/* section1 */
+/* text-r */
+/* @-webkit-keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  } */
+  @-webkit-keyframes marquee-r {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes marquee-r {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  /* text-l */
+  @-webkit-keyframes marquee {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes marquee {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @-webkit-keyframes marquee-l {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes marquee-l {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  /* ///////////////////////////// */
+  @-webkit-keyframes rollCage {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(5turn);
+    }
+  }
+  @keyframes rollCage {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(5turn);
+    }
+  }
+  body {
+    background-color: #ffffff;
+  }
+  .marquee {
+    color: #000000;
+    font-size: var(--step-0);
+    height: calc(170px + 4rem);
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+  .marquee:first-child{padding-top: 30px; border-bottom: 1px solid #000;}
+  .marquee:nth-child(2){padding-top: 30px; border-top: 1px solid #000; bottom: -447px; background: transparent;}
+  .track {
+    top: 50px;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    transition: background-color 300ms ease, color 300ms ease;
+    white-space: nowrap;
+  }
+  .track:nth-child(2){
+    top: 40px;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    transition: background-color 300ms ease, color 300ms ease;
+    white-space: nowrap;
+  }
+  .track .text {
+    -webkit-animation: marquee 10000ms linear infinite;
+            animation: marquee 10000ms linear infinite;
+    align-items: center;
+    display: inline-flex;
+    will-change: transform;
+  }
+  .track .text.-r {
+    -webkit-animation-name: marquee-r;
+            animation-name: marquee-r;
+  }
+  .track .text.-l {
+    -webkit-animation-name: marquee-l;
+            animation-name: marquee-l;
+  }
+  .track:hover {
+    color: #1A1F24;
+  }
+  .track:hover img {
+    -webkit-animation: rollCage 10000ms linear infinite;
+            animation: rollCage 10000ms linear infinite;
+  }
+  .track:hover .-green {
+    color: #e0a6a6;
+  }
+  
+  .-green {
+    color: #A90C0C;
+    font-weight: 900;
+  }
+
+  img#scroll{position: absolute; right: 100px; top: 450px; display: block; width: 170px;}
+
+/* section2 */
+/* 자기소개 */
+#section2 #HY1-1{width: 497px; height: 642px; position: absolute; top: 100px;}
+#section2 #HY1-1:hover+#balloon img{display: block; position: absolute; top: 100px; left: 450px; -webkit-animation:jello-horizontal .9s both;animation:jello-horizontal .9s both;}
+#section2 #mypic{width: 497px; height: 495px; background: #fff; border: 2px solid #000; border-bottom: none;}
+#section2 #introduce{width: 497px; height: 140px; background: #fff; border: 2px solid #000; border-top: 2px dashed #000; text-align: left; padding-top: 5px;}
+#section2 #introduce span{color: #000;display: inline-block; margin-top: 16px; margin-left: 20px;}
+#section2 #introduce #number1{margin-left: 19px;}
+#section2 #introduce img{margin-bottom: -7px; margin-left: 34px;}
+#section2 #introduce #number{margin-left: 32px;}
+#section2 #balloon img{display: none;}
+/* ability */
+#section2 #ability1{width: 802px; height: 105px; background: #fff; border: 2px solid #000; position: absolute; bottom: 149px; left: 400px; text-align: left; padding: 40px; border-bottom: none;}
+#section2 #ability1 span#title{font-size: 30px;  color: #000; display: block; margin-bottom: -3px;}
+#section2 #ability1 span{font-size: 20px;  color: #000; display: inline-block; margin-bottom: 15px;}
+#section2 #ability1 p{font-size: 20px; color: #000; font-family: 'LeferiBaseType-RegularA'; font-weight: 400; display: inline-block;}
+#section2 #ability2{width: 802px; height: 65px; background: #fff; border: 2px solid #000; position: absolute; bottom: 0; left: 400px; text-align: left; padding: 40px; border-top: 2px dashed #000;}
+#section2 #ability2 span#title{font-size: 30px;  color: #000; display: block; margin-bottom: -3px;}
+#section2 #ability2 span{font-size: 20px;  color: #000; display: inline-block; margin-bottom: 15px;}
+#section2 #ability2 p{font-size: 20px; color: #000; font-family: 'LeferiBaseType-RegularA'; font-weight: 400; display: inline-block;}
+#section2 #ability2 p:nth-child(2){margin-left: 120px; display: inline-block;}
+#section2 #ability2 p:last-child{margin-left: 60px; display: inline-block;}
+/* skill */
+#section2 #skill{width: 630px; height: 648px; background: #fff; border: 2px solid #000; position: absolute; top: 0; right: 0; text-align: left; padding: 40px;}
+#section2 #skill #title{color: #000; display: block; font-size: 30px;}
+#section2 #skill .progress{display: flex; line-height: 35px; margin-bottom: 20px;}
+#section2 #skill .progress span{display: block; width: 150px; font-size: 20px; color: #000; /* background: #14d46d; */}
+#section2 #skill .progress-bar{display: flex; width: 420px; height: 30px; margin-left: 58px; border: 2px dashed #000; position: relative; }
+#section2 #skill .progress-bar .box:not(:last-child){width: 58px; height: 100%; border-right: 2px dashed #000; z-index: 999;}
+#section2 #skill .progress .progress-bar #bar1{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #54a8ff;}
+#section2 #skill .progress .progress-bar #bar2{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #fdc143;}
+#section2 #skill .progress .progress-bar #bar3{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #f04f6d;}
+#section2 #skill .progress .progress-bar #bar4{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #fb88ab;}
+#section2 #skill .progress .progress-bar #bar5{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #4fa578;}
+#section2 #skill .progress .progress-bar #bar6{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #a862c2;}
+#section2 #skill .progress .progress-bar #bar7{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #a862c2;}
+#section2 #skill .progress .progress-bar #bar8{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #fdc143;}
+#section2 #skill .progress .progress-bar #bar9{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #54a8ff;}
+#section2 #skill .progress .progress-bar #bar10{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #fdc143;}
+#section2 #skill .progress .progress-bar #bar11{position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 0; background: #54a8ff;}
+#section2 #skill .progress .progress-bar .num{position: absolute; top: 0; bottom: 0; right: 15px; font-size: 1.1em; color: #666; line-height: 30px; display: none;}
+
+/* 말풍선 ani */
+ @-webkit-keyframes jello-horizontal{0%{-webkit-transform:scale3d(1,1,1);transform:scale3d(1,1,1)}30%{-webkit-transform:scale3d(1.25,.75,1);transform:scale3d(1.25,.75,1)}40%{-webkit-transform:scale3d(.75,1.25,1);transform:scale3d(.75,1.25,1)}50%{-webkit-transform:scale3d(1.15,.85,1);transform:scale3d(1.15,.85,1)}65%{-webkit-transform:scale3d(.95,1.05,1);transform:scale3d(.95,1.05,1)}75%{-webkit-transform:scale3d(1.05,.95,1);transform:scale3d(1.05,.95,1)}100%{-webkit-transform:scale3d(1,1,1);transform:scale3d(1,1,1)}}@keyframes jello-horizontal{0%{-webkit-transform:scale3d(1,1,1);transform:scale3d(1,1,1)}30%{-webkit-transform:scale3d(1.25,.75,1);transform:scale3d(1.25,.75,1)}40%{-webkit-transform:scale3d(.75,1.25,1);transform:scale3d(.75,1.25,1)}50%{-webkit-transform:scale3d(1.15,.85,1);transform:scale3d(1.15,.85,1)}65%{-webkit-transform:scale3d(.95,1.05,1);transform:scale3d(.95,1.05,1)}75%{-webkit-transform:scale3d(1.05,.95,1);transform:scale3d(1.05,.95,1)}100%{-webkit-transform:scale3d(1,1,1);transform:scale3d(1,1,1)}}
+
+
+/* section3 */
+#section3 .contents{margin-top: 70px;}
+#section3 .contents{width: 49%; height: 100%; float: left; background: transparent; }
+#section3 .contents #title1{font-size: 40px; transition: all .2s; color: #000;}
+#section3 .contents:hover #title1{position: relative; color: #ffbb2a;}
+#section3 .contents .oval-wrap{width: 250px; /* background: #ccc; */ display: flex; cursor: pointer; margin: 90px auto; margin-left: 310px; padding: 20px;}
+/* #section3 .contents .oval-wrap:hover{border-bottom: 2px dashed #000;} */
+#section3 .contents .oval-wrap span{font-size: 30px; color: #000; display: inline-block; padding-top: 11px;}
+#section3 .contents .oval span{display: block; margin-top: 3px; font-size: 10px; width: 70px;}
+#section3 .contents .oval-wrap #oval1{width: 70px; height: 40px; background: #ff8181; border-radius: 50%; font-size: 13px; color: #000; margin-right: 20px; margin-top: 10px;}
+#section3 .contents .oval-wrap #oval2{width: 70px; height: 40px; background: #1CC875; border-radius: 50%; font-size: 13px; color: #000; margin-right: 20px; margin-top: 10px;}
+#section3 .contents .oval-wrap #oval3{width: 70px; height: 40px; background: #FFCB49; border-radius: 50%; font-size: 13px; color: #000; margin-right: 20px; margin-top: 10px;}
+#section3 .contents .oval-wrap #oval4{width: 70px; height: 40px; background: #8263D9; border-radius: 50%; font-size: 13px; color: #000; line-height: 13px; margin-right: 20px; margin-top: 10px;}
+#section3 .contents .oval-wrap #oval4 span{margin-top: -4px;}
+#section3 .contents .D-content{border: 2px solid #000; /* border-radius: 50%; */ width: 140px; height: 140px; display: flex;}
+
+#section3 #coding{width: 49%; height: 100%; float: right; background: transparent; font-size: 40px; transition: all .2s; color: #000;}
+#section3 #coding:hover{position: relative; color: #218d55;}
+
+/* section4 */
+#section4 #thumbnail1{position: absolute; display: block; left: 80px; width: 90%;}
+#section4 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section4 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section4 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section4 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section4 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section4 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section4 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+/* section5 */
+#section5 #thumbnail2{position: absolute; display: block; text-align: center;}
+#section5 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section5 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section5 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section5 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section5 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section5 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section5 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+/* section6 */
+#section6 #thumbnail3{position: absolute; display: block; text-align: center;}
+#section6 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section6 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section6 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section6 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section6 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section6 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section6 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+/* section7 */
+#section7 #thumbnail4{position: absolute; display: block; text-align: center;}
+#section7 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section7 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section7 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section7 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section7 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section7 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section7 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+/* section8 */
+#section8 #thumbnail4{width: 60%; position: absolute; top: 80px; left: 390px;}
+#section8 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section8 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section8 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section8 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section8 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section8 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section8 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+/* section9 */
+#section9 #thumbnail4{width: 60%; position: absolute; top: 80px; left: 390px;}
+#section9 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section9 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section9 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section9 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section9 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section9 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section9 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+/* section10 */
+#section10 #thumbnail4{width: 45%; position: absolute; top: 80px; left: 480px;}
+#section10 #see{width: 200px; height: 50px; padding-bottom: 5px; position: absolute; bottom: 100px; display: inline-block; margin-left: -100px; align-items: center;}
+#section10 #see:hover{height: 48px; border-bottom: 2px dashed #000;}
+#section10 #see #eye{opacity: 0; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section10 #see:hover #eye{opacity: 1; width: 45px; height: 45px; transition: all .2s; position: absolute; }
+#section10 #see p{color: #000;display: inline-block; margin-left: 60px; margin-top: 6px; font-size: 30px;}
+#section10 #see #closeEye{width: 50px; height: 50px; position: absolute;  transition: all .2s; display: inline-block;}
+#section10 #see:hover #closeEye{opacity: 0; width: 50px; height: 50px; transition: all .2s; position: absolute; }
+
+
+/* section11 */
+.marquee:last-child{margin-top: 330px; padding-top: 30px; border-bottom: 1px solid #000; border-top: 1px solid #000;}
+
+
+

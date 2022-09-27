@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coupang</title>
+    <style>
+        body{background: rgb(247, 255, 252); height: 100vh;}
+        .phone{z-index: 999; width: 489px; height: 976px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: url(./iphone13.png) no-repeat;}
+        .content{width: 423px; height: 920px; background: #fff; position: absolute; top: 39px; left: 46px; border-radius: 50px; overflow: hidden;}
+        iframe{width: 100%; height: 100%;}
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <div class="content">
+            <iframe src="./mobile/index.html" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script> <!-- cdn링크 -->
+    <script>
+        //클로스 브라우징이 되기 위해 이걸 써야함!
+        var deviceAgent = navigator.userAgent.toLowerCase();
+
+        var isTouchDevice = Modernizr.touch ||
+        (deviceAgent.match(/(iphone|ipod|ipad)/) ||
+        deviceAgent.match(/(android)/)  ||
+        deviceAgent.match(/(iemobile)/) ||
+        deviceAgent.match(/iphone/i) ||
+        deviceAgent.match(/ipad/i) ||
+        deviceAgent.match(/ipod/i) ||
+        deviceAgent.match(/blackberry/i) ||
+        deviceAgent.match(/bada/i));
+
+        if (isTouchDevice) {
+                //Do something touchy
+                location.href='http://cjh765211.dothome.co.kr//05_mobile/mobile/'
+            } else {
+                //Can't touch this
+            }
+    </script>
+</body>
+</html>

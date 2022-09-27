@@ -1,0 +1,99 @@
+/**
+ * Created by jhkoo77 on 2017-08-21.
+ */
+
+var _PINsign_Base = "/docfiles/solution/wizvera/pinsign";
+var _PINsign_Svc = "/solution/wizvera/pinsign/svc";
+var _PINsign_SystemMode = "real"; //"dev", "test", "real"
+var _PINsign_SystemLang = "KOR";  //"KOR", "ENG"
+if (typeof _SITE_SystemMode != "undefined") _PINsign_SystemMode = _SITE_SystemMode;
+if (typeof _SITE_SystemLang != "undefined") _PINsign_SystemLang = _SITE_SystemLang;
+
+var PINsignConfig = (function () {
+    var _config = {};
+
+    //service url
+    _config.SERVICE_URL = _PINsign_Svc + "/pinsign_service.jsp";
+
+    //ui image url
+    _config.PROGRESS_IMAGE_URL = _PINsign_Base + "/img/progress.gif";
+    _config.LOCK_ICON_URL = _PINsign_Base + "/img/pinsign-lock.png";
+    _config.PINPAD_MASK_URL = _PINsign_Base + "/img/pinpad-mask.png";
+    _config.PINPAD_MASK_LARGE_URL = _PINsign_Base + "/img/pinpad-mask-large.png";
+    _config.PINPAD_NUMBER_URL = _PINsign_Base + "/img/pinpad-nums.png";
+    _config.PINPAD_NUMBER_LARGE_URL = _PINsign_Base + "/img/pinpad-nums-large.png";
+
+    //add nonce at jws header
+    _config.ADD_NONCE_TO_JWS = true;
+    _config.NONCE_URL = _PINsign_Svc + "/pinsign_nonce.jsp";
+
+    _config.INCLUDE_VID_RANDOM = "both"; // "none","vid","svid","both"
+    _config.BERRY_AUTO_RENEW_TIME =24*365*2; // hour
+
+
+    //default filter
+    _config.filter = {}; //issuer,uid,subject
+    _config.filter.issuer = [];
+    _config.filter.profile = ["02"];
+    if (_PINsign_SystemMode == "dev" || _PINsign_SystemMode == "test") {
+        _config.filter.issuer = [];
+        _config.filter.profile = [];
+    }
+	_config.hideExpire = true;
+
+    //berry list sort function f(a,b) : -1,0,1
+    _config.sortCompare = undefined;
+
+    //etc
+    _config.USE_CONNECTED = false;
+    _config.CONNECTED_SERVER_LIST = [
+        'https://apple.wizvera.com',
+        'https://banana.wizvera.com',
+        'https://cherry.wizvera.com'
+    ];
+
+
+    _config.DETAIL_ERROR_MESSAGE = false;
+
+    //ui service
+    _config.USE_UI_SERVICE = true;
+    _config.UI_SERVICE_URL = _PINsign_Svc + "/ui.jsp";
+
+    //pinpad delete behavior
+    //_config.PINPAD_DELETE_ONE_AT_ONCE = false;
+    //open service : if the same host as a current;
+    _config.USE_OPEN_PINSIGN_SERVICE = false;
+    _config.OPEN_PINSIGN_SERVICE_URL = "https://app.wizvera.com" + _PINsign_Svc + "/ui.jsp";
+    
+    var parser = document.createElement("a");
+    parser.href = _config.OPEN_PINSIGN_SERVICE_URL;
+
+    if (parser.protocol === location.protocol && parser.hostname === location.hostname) {
+        _config.USE_OPEN_PINSIGN_SERVICE = false;
+    }
+
+    _config.useOpenService = function () {
+        return _config.USE_OPEN_PINSIGN_SERVICE;
+    };
+
+    _config.str = {};
+    _config.str.profileAltName ={
+        '01':'금융',
+        '02':'대출',
+        '03':'개인',
+        '04':'기업'
+    };
+    _config.str.issuerSubjectAltName ={
+        'pinsign25.wizvera.com':'위즈25',
+        'pinsign.wizvera.com':'위즈20',
+        'test.wizvera.com':'개발테스트'
+    };
+
+    //제외할 문자열 목록을 받아서 검사 (기본검사 하지 않음 : 3자리 연속, 3자리 연속증가 등등)
+    //ErrorCode.PIN_VALITITY_FAIL 값과 연관
+    _config.invalidPinPatternList = undefined; //function() { return [] };
+    _config.disableDefaultPinPatternCheck = false;
+
+    return _config;
+})();
+window.ID2Config = window.ID2Config || PINsignConfig;

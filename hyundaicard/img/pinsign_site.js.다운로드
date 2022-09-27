@@ -1,0 +1,60 @@
+/**
+ * Created by jhkoo77 on 2018-07-10
+ */
+
+//에러내용에 사용자에게 보여줄 세부 안내메시지
+function SITE_getPINsignUserMsg(name, error) {
+    var errCode = error.code;
+    var errMsg = error.message;
+
+    //에러코드 제거
+    if (errCode == 12417) errMsg = SITE_removeErrorCode(errMsg); //PIN번호 오류(추가발급)
+    if (errCode == 17015) errMsg = SITE_removeErrorCode(errMsg); //PIN번호 오류(서명)
+    //if (errCode == 17011) errMsg = SITE_removeErrorCode(errMsg); //베리자동폐기
+    //if (errCode == 17005) errMsg = SITE_removeErrorCode(errMsg); //폐기된베리
+    //if (errCode == 12438) errMsg = SITE_removeErrorCode(errMsg); //PIN잠김
+    //if (errCode == 12440) errMsg = SITE_removeErrorCode(errMsg); //PIN잠김
+    //if (errCode == 22311) errMsg = SITE_removeErrorCode(errMsg); //만료된 PIN인증서
+
+    //추가발급시 PIN번호 오류카운드 추가
+    if (errCode == 12417) {
+        //PIN번호가 일치하지 않습니다.(남은회수 #pinRetryCount#회)\nPIN번호 #maxPinRetryCount#회 오류시 발급된 모든 PIN인증서가 폐기됩니다.
+        errMsg = errMsg.replace(/#pinRetryCount#/g, error.pinRetryCount).replace(/#maxPinRetryCount#/g, error.maxPinRetryCount);
+        //errMsg = errMsg.substring(0,errMsg.indexOf("\n")); //상세안내 제거
+    }
+
+    //서명,갱신시 PIN번호 오류카운드 추가
+    else if (errCode == 17015) {
+        //PIN번호가 일치하지 않습니다.(남은회수 #pinRetryCount#회)\nPIN번호 #maxPinRetryCount#회 오류시 사용중인 PIN인증서가 폐기됩니다.
+        errMsg = errMsg.replace(/#pinRetryCount#/g, error.pinRetryCount).replace(/#maxPinRetryCount#/g, error.maxPinRetryCount);
+        //errMsg = errMsg.substring(0,errMsg.indexOf("\n")) //상세안내 제거
+    }
+
+    //함수별 에러 내용 및 타이틀 추가
+    if (name == "list") {
+        errMsg = "PIN인증서 목록보기 오류\n\n" + errMsg;
+    }
+
+    else if (name == "remove") {
+        errMsg = "PIN인증서 삭제오류\n\n" + errMsg;
+    }
+
+    else if (name == "renew") {
+        //errMsg = "PIN인증서 갱신오류\n\n" + errMsg;
+    }
+
+    else if (name == "issue") {
+        //errMsg = "PIN인증서 발급오류\n\n" + errMsg;
+    }
+
+    else if (name == "sign") {
+        //errMsg = "PIN인증서 서명오류\n\n" + errMsg;
+    }
+
+    return errMsg;
+}
+function SITE_removeErrorCode(errMsg) {
+    var idx = errMsg.lastIndexOf("[");
+    if (idx >0) return errMsg.substring(0,idx);
+    return errMsg;
+}

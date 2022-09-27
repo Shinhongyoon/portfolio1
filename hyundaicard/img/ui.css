@@ -1,0 +1,415 @@
+#id2-list-container {
+    z-index: 1000;
+    position: absolute;
+    display: inline-block;
+}
+
+.id2-list {
+    border: 1px solid #0066CC;
+    border-top: 0px solid;
+}
+
+.id2-item-container {
+    background-color: #DEEDFB;
+    padding-left: 10px;
+    height: 45px;
+    border-top: 1px solid #C8E0F8;
+}
+
+.id2-item-container:hover {
+    background-color: #A7CEF4;
+}
+
+.id2-item-container > div:nth-child(1) {
+    /*display:inline;*/
+    white-space: nowrap;
+    overflow: hidden;
+    width: 70%;
+}
+
+.id2-item-container > div:nth-child(2) {
+    float: right;
+    width: 20px;
+}
+
+.id2-item-container > div:nth-child(3) {
+    float: right;
+    width: 50px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.id2-item-container > div {
+    display: inline-block;
+}
+
+.id2-delete {
+    text-align: right;
+    padding: 1px 3px 3px 3px;
+    cursor: hand;
+}
+
+.id2-lock-icon {
+    text-align: center;
+}
+
+.id2-id {
+    font-weight: bold;
+    font-size: 11pt;
+    color: black;
+    line-height: 45px;
+
+}
+
+.id2-date-label {
+    font-size: 6pt;
+    text-align: center;
+    color: #6AABED;
+}
+
+.id2-last-use-date {
+    text-align: center;
+    line-height: 15px;
+    font-size: 6pt;
+    font-weight: bold;
+    color: #0066CC;
+}
+
+.id2-selected .id2-delete {
+    visibility: hidden;
+}
+
+.id2-selected > .id2-item-container {
+    background-color: #A7CEF4;
+    border: solid 1px #0066CC;
+}
+
+/* ------------------------ pinpad ---------------------------------------------*/
+
+/* ----------------- pinpad  -------------------- */
+.pinsign-pinpad-title-bar {
+    width: 100%;
+    height: 30px;
+    border-bottom: solid 1px #7C49F6;
+}
+
+.pinsign-pinpad-title-bar > .pinpad-title {
+    padding-left: 15px;
+    vertical-align: middle;
+    float: left;
+    font-weight: bold;
+    height: 100%;
+    line-height: 30px;
+}
+
+.pinsign-pinpad-title-bar > .pinpad-close {
+    padding-right: 15px;
+    vertical-align: middle;
+    float: right;
+    height: 100%;
+    line-height: 30px;
+}
+
+/*----------- float pinpad --------------------------*/
+#pinsign-pinpad-container {
+    width: 310px;
+    height: 190px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none;
+    background-color: white;
+    margin-top: 5px;
+}
+
+#pinsign-pinpad-container .pinsign-pinpad-body {
+    margin: 0px 12px 0px 12px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 7px;
+    height: 100px;
+    border-bottom: solid 1px #CCCCCC;
+}
+
+#pinsign-pinpad-container .pinsign-pinpad-number {
+    width: 36px;
+    height: 36px;
+    margin: 4px 5px 4px 5px;
+    float: left;
+    background-image: url('../img/pinpad-nums.png');
+}
+#pinsign-pinpad-container .pinsign-pinpad-command-bar {
+    width: 100%;
+    height: 35px;
+    margin-top: 10px;
+}
+
+#pinsign-pinpad-container .pinsign-pinpad-command-button {
+    margin-left: 15px;
+    margin-right: 12px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: auto;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    float: left;
+}
+/*------------- mobile -------------------*/
+
+#pinsign-pinpad-mobile-container {
+    width: 338px;
+    border-radius: 8px;
+    border: solid 2px #ccc;
+    box-sizing: border-box;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+
+}
+
+#pinsign-pinpad-mobile-container > .pinsign-pinpad-body {
+    margin:0 auto;
+    overflow-y:auto;
+}
+
+#pinsign-pinpad-mobile-container > .pinsign-pinpad-command-bar {
+    /*height: 100%;*/
+    width: 100%;
+
+}
+
+#pinsign-pinpad-mobile-container .pinsign-pinpad-command-button {
+    line-height: 48px;
+    font-size: 12pt;
+    font-weight: 600;
+    cursor: pointer;
+    width: 50%;
+    text-align: center;
+    display: inline-block;
+}
+
+#pinsign-pinpad-mobile-container .pinsign-pinpad-number {
+    box-sizing: border-box;
+    width: 25%;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    color: black;
+    font-size: 20px;
+    font-weight: 400;
+    float: left;
+    background-size: 396px 36px;
+    border-right: solid 1px #ccc;
+    border-bottom: solid 1px #ccc;
+    /* background-image: url('../img/pinpad-nums-mobile.png'); */
+
+}
+
+.pinpad-empty {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+
+#pinsign-pinpad-mobile-container .pinpad-clear {
+    background: url('../img/pinpad_delete.svg') no-repeat center;
+    background-size: auto 23px;
+    color:#FFFFFF00;
+}
+
+/*-------------------------------------------*/
+.pinsign-pinpad-embed-number {
+    width: 36px;
+    height: 36px;
+    margin: 4px 5px 4px 5px;
+    float: left;
+    background-size: 396px 36px
+}
+
+
+.pinpad-number { }
+.pinpad-empty { }
+.pinsign-pinpad-command-bar > .pinpad-clear { }
+.pinsign-pinpad-command-bar > .pinpad-reset { }
+.pinsign-pinpad-command-bar > .pinpad-complete {
+    width: 110px;
+    float: right;
+}
+
+.pinsign-pinpad-mask-container {
+    width: 120px;
+    display: inline-block;
+    position: relative;
+}
+
+.pinsign-pinpad-mask-container-large {
+    width: 210px;
+}
+
+.pinsign-pinpad-mask {
+    display: inline-block;
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    background: url('../img/pinpad-mask.png') -16px 0px;
+}
+
+.pinsign-pinpad-mask-large {
+    width: 23px;
+    height: 23px;
+    margin: 4px;
+    background: url('../img/pinpad-mask-large.png') -23px 0px;
+}
+
+.mask-number { background-position: 0px 0px; }
+.mask-number-large { background-position: 0px 0px; }
+
+.pinsign-pinpad-command-button,  .pinpad-number, .pinpad-close { cursor: pointer; }
+
+/*  ------------- on / off switch ----------- */
+/* SWITCH STYLES */
+/* SOURCE: https://proto.io/freebies/onoff/ */
+.onoffswitch {
+    position: relative;
+    width: 56px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.onoffswitch-checkbox {
+    display: none;
+}
+
+.onoffswitch-label {
+    width: 57px;
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #FFFFFF;
+    border-radius: 20px;
+}
+
+.onoffswitch-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block;
+    float: left;
+    width: 50%;
+    height: 22px;
+    padding: 0;
+    line-height: 22px;
+    font-size: 12px;
+    color: black;
+    font-family: Trebuchet, Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 6px;
+    background-color: #78797C; /*#489EF3; */
+    color: #FFFFFF;
+}
+
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 6px;
+    background-color: #78797C; /*#939598;*/
+    color: #FFFFFF;
+    text-align: right;
+}
+
+.onoffswitch-switch {
+    display: block;
+    width: 16px;
+    margin: 5px;
+    background: #FFFFFF;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 30px;
+    border: 2px solid #FFFFFF;
+    border-radius: 20px;
+    transition: all 0.3s ease-in 0s;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner { margin-left: 0; }
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch { right: 0px; }
+
+.pinsign-connected-onoff-icon { float: left; }
+
+.pinsign-action-button, .pinsign-item-more, .pinpad-number, .pinsign-select-item, .pinsign-select-action-go-issue, .pinsign-nav-prev, .pinsign-nav-next, .pinsign-next, .pinsign-action-issue, .pinsign-pinpad-command-button {
+    cursor: pointer;
+}
+
+
+/* -------------- color --------------------- */
+.pinsign-color-title { color: #7C49F6; }
+.pinsign-border-gray { border: solid 1px #95919B; }
+.pinsign-border-purple { border: solid 1px #7C49F6; }
+.pinsign-color-button-default { background-color: #794DF6; font-weight:bolder; color: white; }
+.pinsign-color-button-warning { background-color: #4ebef6; font-weight:bolder; color: white; }
+.pinsign-color-bg-lightblue { background-color: #000; }
+.pinsign-color-link { color: #489EF3; }
+.pinsign-color-text-transparent { color: rgba(255, 255, 255, 0); }
+.pinsign-color-text-white { color: white; }
+.pinsign-color-text-gray1 { color: #767676; }
+.pinsign-color-text-gray2 { color: #808080; }
+.pinsign-color-text-gray3 { color: #808080; }
+.pinsign-color-text-purple { color: #7C49F6; }
+.pinsign-color-text-placeholder { color: #999999; }
+.pinsign-color-bg-pinpad-large { background-color: #F2F2F2; width: 444px !important; }
+/* ----------------- color -------------------- */
+
+
+
+.pinsign-connected-complete-icon { background: url('../img/pinsign-connected-complete.png') no-repeat center; }
+.pinsign-icon-list { background: url('../img/pinsign-list.png') no-repeat center center; }
+.pinsign-icon-list:hover { background: url('../img/pinsign-list_hover.png') no-repeat center center; }
+.pinsign-icon-connected { background: url('../img/pinsign-connected.png') no-repeat center center; }
+.pinsign-icon-connected-disable { background: url('../img/pinsign-connected_disable.png') no-repeat center center; }
+.pinsign-icon-connected:hover { background: url('../img/pinsign-connected_hover.png') no-repeat center center; }
+.pinsign-icon-change-pin { background: url('../img/pinsign-change-pin.png') no-repeat center center; }
+.pinsign-icon-change-pin:hover { background: url('../img/pinsign-change-pin_hover.png') no-repeat center center; }
+.pinsign-icon-delete { background: url('../img/pinsign-delete.png') no-repeat center center; }
+.pinsign-icon-delete:hover { background: url('../img/pinsign-delete_hover.png') no-repeat center center; }
+.pinsign-icon-menu { background: url('../img/pinsign-menu.png') no-repeat center center; }
+.pinsign-icon-menu:hover { background: url('../img/pinsign-menu_hover.png') no-repeat center center; }
+.pinsign-icon-pinsign-type { background: url('../img/pinsign-icon@2x.png') no-repeat center center; background-size:100%; }
+.pinsign-icon-connected-type { background: url('../img/pinsign-connected-icon.png') no-repeat center center; }
+.pinsign-icon-pinlist-type { background: url('../img/pinsign-icon_pinlist.png') no-repeat center center; }
+
+
+
+.pinsign-connected-message-detail-message a:link {text-decoration: none;}
+.pinsign-connected-message-detail-message a:visited {text-decoration: none;}
+.pinsign-connected-message-detail-message a:hover {text-decoration: none;}
+.pinsign-connected-message-detail-message a:active {text-decoration: none;}
+
+
+.pinsign-animate,
+.pinsign-animate > div,
+.pinsign-animate input,
+.pinsign-animate .pinpad-container,
+.pinsign-animate .pinsign-scale-down,
+.pinsign-animate .pinsign-pinpad-mask-container,
+.pinsign-animate .pinsign-body-pulldown {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+

@@ -1,0 +1,314 @@
+(function($, window, document, undefined){
+    /**
+     * 여러 인증 방법 중 공인 인증을 호출하기 위해 사용한다.
+     *   공인 인증이 인증 방법에 포함되지 않는 경우엔 굳이 사용할 필요는 없다. 
+     *   다만, 인증 처리 페이지가 보안과 밀접한 관계를 가지고 있기 때문에
+     *   내부적으로 E2E 적용이 동시에 이루어지는데 이 플러그인을 사용하지 않을 경우
+     *   따로 hcTransKey 플러그인을 호출해 줘야 한다. (hcTransky 참조)
+     *   
+     *   그러나 이 플러그인의 가장 중요한 기능은 secure.publicCertLoad() 함수 호출에 있다.
+     *            $.hcSecure({
+     *               formObj : $(".form"),   //인증을 포함하고 있는 form Object
+     *               
+     *               onSecureLoadAfter:function(secure){  //인증 페이지가 로드되면 자동 실행
+     *                   var certType = secure.CERT_TYPE;
+     *                   secure.config.formObj.hcValidate({
+     *                       submitBtn:"submitBtn" ,
+     *                       callback:function(obj, ev){
+     *                           secure.publicCertLoad(secure);  // 공인인증 팝업 띄움
+     *                       }
+     *                   });
+     *                },
+     *                confirmCallback : function() {
+     *                    // 공인인증 확인 추가 처리
+     *                    alert("확인을 누르셨습니다.");
+     *                },
+     *                cancelCallback : function() {
+     *                   // 공인인증 취소 추가 처리
+     *                    alert("취소하셨습니다.");
+     *                }
+     *            });          
+     *   
+     * 
+     */
+    var secure = function(options) {
+        this.options = {};
+        this.options = options;
+    };
+
+    secure.prototype = {
+        
+        defaults: {
+            formId : '',
+            formObj : '',                   // 인증 폼을 지정하는 Object
+            certificationType: '',          // public, mobile, ipin, multi (1개 이상의 인증 처리를 해야 할 때)
+            pubTriggerObj : '',             // 공인 인증 사용시 버튼 Object
+            selectObj : '',                 // multi인증 처리 시 라디오 버튼 Object
+            templateAreaObj : '',           // template이 들어갈 영역
+            confirmCallback : '',           // 인증 callback event - 미지정시 자동으로 지정된 action으로 submit 처리
+            cancelCallback : '',            // 인증 callback event - 미지정시 error alert 호출
+            onSecureLoadAfter : '',         // input 필드에 보안 처리가 완료 된 시점의 callback
+            hasRelationPub:false,           // 공인인증 페이지에서 인증과 연관된 필드 (주민등록번호..등등)가 존재하는 경우
+            public_callback: function(){},
+            card_callback:function(){},
+            webid_callback:function(){},
+            cellphone_callback:function(){}
+            
+        },
+        
+        CERT_TYPE : '',                       // 선택된 type을 전역으로 지정
+        
+        /**
+         * 여러 인증방식을 사용하는 페이지에서 각 인증 방식에 따라 호출 할 함수를 결정한다.
+         * 인증 방식이 공인인증서일 경우 인증서 화면을 띄우고 기타 다른 인증일 경우 그에 맞는 화면을 로드한다.
+         * @param e
+         */
+        func : function(e){
+            var _this = this;
+            type = _this.CERT_TYPE;
+            
+            types = {
+                "public" : _this.publicCertLoad,
+                others : _this.certLoad
+            };
+            if(types[type]) {
+                types[type](_this);
+            } else {
+                types.others(_this);
+            }
+            e.preventDefault();
+        },
+        
+        /**
+         * hcSecure의 초기 셋팅.
+         * E2E 보안 적용 및 공인인증서를 띄울 트리거 지정, 라디오버튼의 액션 지정을 한다.
+         * @returns {secure}
+         */
+        init:function() {
+            var self = this;
+           
+            if(typeof self.options.formId != "undefined" && self.options.formId != "" && 
+                (typeof self.options.formObj == "undefined" || self.options.formObj == "")){
+                self.options.formObj = $("#"+self.options.formId);
+            }
+            
+            self.config = $.extend({}, self.defaults, self.options);
+            
+            if(self.config.selectObj != '') {  // 라디오 버튼이 있는 경우
+                self.config.selectObj.on("click.certType", function(e) { $.proxy(self.radioEventLoad(e), self); });
+                self.config.selectObj.parent().find("a").eq(0).trigger("click.certType");
+                self.config.selectObj.parent().find("a").removeClass("on").eq(0).addClass("on");
+            } else {                           // 라디오 버튼이 없는 경우
+                //$.hcTransKey(self.config);  // 보안필드 처리
+                if(self.config.onSecureLoadAfter != '' && typeof self.config.onSecureLoadAfter == "function") {
+                    self.config.onSecureLoadAfter.call(this, self);
+                }
+            }
+            
+            if(self.config.pubTriggerObj != '') {   //validation 버튼과 공인인증창을 띄우는 버튼이 다른 경우. 
+                if(self.CERT_TYPE == "public") {    
+                    self.config.pubTriggerObj.on('click.sendBtn', function(e) { $.proxy(self.func(e), self); });
+                } else {                            //공인인증창을 띄우는 버튼과 validation 버튼이 같은 경우
+                    //$.hcTransKey(self.config);  // 보안필드 처리
+                    self.config.pubTriggerObj.on('click.sendBtn', function(e) { $.proxy(self.noPubTriggerLoad(e), self); });
+                }
+            }
+            
+            return this;
+        },
+        
+        /**
+         * 라디오 버튼이 있는 경우 라디오 버튼 클릭 이벤트 callback function.
+         * @param e
+         */
+        radioEventLoad : function(e) {
+            var _this = this;
+            types = $(e.currentTarget).attr("type");
+            
+            if( ((_this.config.templateAreaObj != '' && _this.CERT_TYPE != types)) 
+                    || !_this.config.templateAreaObj.is(':visible') ) {
+                _this.config.templateAreaObj.html($("#"+types+"-template").html());
+                if (!_this.config.templateAreaObj.is(':visible') ) {
+                    _this.config.templateAreaObj.show();
+                }
+            }
+            
+            _this.CERT_TYPE = types;
+            if(_this.config.onSecureLoadAfter != '' && typeof _this.config.onSecureLoadAfter == "function") {
+                _this.config.onSecureLoadAfter.call(this, _this);
+            }
+            
+            //$.hcTransKey(_this.config);			npVCtrl.hideAll();			npPfsCtrl.RescanField();			
+            /* 페이지로딩시 스타일적용 *********** */
+           	$(".select-radio:not(#searchCardNum)").selectRadio(); //2015-03-31 수정
+            pageRoadDesign();
+            eval("_this.config."+_this.CERT_TYPE+"_callback()");
+        },
+        
+         
+        /**
+         * 인증 방법을 선택하는 라디오 버튼이 없는 경우
+         * 페이지 내에 인증 방법이 공인인증 하나인 경우
+         * sumbit버튼과 공인인증서를 띄우는 버튼이 동일한 경우
+         * 공인인증창을 띄울 때 트리거를 사용하지 않는 경우
+         * 위의 상황을 모두 만족하는 경우 호출된다.
+         * @param e
+         */
+        noPubTriggerLoad : function(e) {
+            var _this = this;
+            if(_this.config.onSecureLoadAfter != '' && typeof _this.config.onSecureLoadAfter == "function") {
+                _this.config.onSecureLoadAfter.call(this, _this);
+            }
+            _this.publicCertLoad(_this);
+            
+            /* 페이지로딩시 스타일적용 *********** */
+						$(".select-radio:not(#searchCardNum)").selectRadio(); //2015-03-31 수정
+            pageRoadDesign();
+        },
+        
+        /**
+         * 공인인증 화면을 띄워준다. 
+         * 만약 objId가 유효한 객체이면 공인인증서 창 닫기 버튼을 누른 후 포커스 지정을 위해 내부 변수에 저장한다.
+         * @param _this
+         * @returns {Boolean}
+         */
+        publicCertLoad : function(_this, objId){
+            // pubTriggerObj 지정이 안됐을시에 넘겨주는 인자가 유효 할때 대입 (디폴트캔슬콜백에서 포커스 지정시 사용)             if(objId != null && typeof objId != "undefined")   
+                _this.config.pubTriggerObj = $("#"+objId);  
+            
+            // 인증서창 팝업
+            if(!_this.config.hasRelationPub) { 
+                //XecureWeb.SetUITarget(document.getElementById("wrapper"));
+                // 패스워드가 올바를 경우 전자서명 값을 생성한다
+                /*
+				if (typeof _this.config.confirmCallback == "function" && typeof _this.config.cancelCallback == "function") {
+                    Sign_with_vid_user_hc(16, "" , s
+                    , function(aResult) {
+                        aResult.CERT_TYPE = _this._type;
+                        _this.config.formObj.hcMakeXecureWebField(aResult);
+                        _this.config.confirmCallback.call(_this, aResult);
+                    }
+                    , function(aResult) {
+                        aResult.CERT_TYPE = _this._type;
+                        _this.config.cancelCallback.call(_this, aResult);
+                    });
+                } else { 
+            		if (typeof _this.config.confirmCallback == "function") {
+            		    Sign_with_vid_user_hc(16, "", s
+                            , function(aResult) {
+                                aResult.CERT_TYPE = _this._type;
+                                _this.config.formObj.hcMakeXecureWebField(aResult);
+                                _this.config.confirmCallback.call(_this, aResult); 
+                    	    }
+            		        , _this.default_Cancel_Callback);
+            		} else if (typeof _this.config.cancelCallback == "function") {
+            		    Sign_with_vid_user_hc(16, "", s
+                            , _this.default_SignDataCMS_Callback
+                            , function(aResult) {
+                                aResult.CERT_TYPE = _this._type;
+                                _this.config.cancelCallback.call(_this, aResult);
+                    	      });    
+                	} else {
+                	    Sign_with_vid_user_hc(16, "", s, _this.default_SignDataCMS_Callback, _this.default_Cancel_Callback);
+                	}
+                }
+				
+                window["cert_this"] = _this;
+                return false;
+				*/                window._that = _this;                                                if (_this.config.formObj.length) {                    var signData = '';                    if (typeof _this.config.formObj[0].eContent == 'undefined') {                        signData = '';                    } else {                        signData = _this.config.formObj[0].eContent.value;                    }                    if (signData == '') {                        Delfino.login("login=certLogin", _this.delfino_complete);                    } else {                        Delfino.sign(signData, _this.delfino_complete, {cacheCertFilter:false, cacheCert:false});                    }                    // alert(_this.config.pubTriggerObj[0].eContent.value);                    //signData = "ha:soo:data:데이타:입니다."; //_this.config.pubTriggerObj[0].eContent.value;                                                                                                } else {                    Delfino.login("login=certLogin", _this.delfino_complete);                }            }        },		//전자서명시 호출되는  CallBack 함수
+		delfino_complete : function(result){
+			if (typeof _that.config.confirmCallback == "function" && typeof _that.config.cancelCallback == "function") {
+				if(result.status==0){
+					//var _this = window["cert_this"];
+					////alert("ErrCode [" + result.status + "] ErrMsg [" +result.message+"]");
+					////_this.config.pubTriggerObj.focus();	
+					//return;
+
+					_that.config.cancelCallback.call(); 
+					return;
+				}
+
+				if(result.status==1){
+					$('#signed_msg, #vid_msg ').remove();
+					// SignVerifier 에서 사용할 msg
+					$('<input>').attr({
+						type: 'hidden',
+						id: 'signed_msg',
+						name: 'signed_msg',
+						value: result.signData
+					}).appendTo($(_that.config.formObj));
+					
+					// VidVerifier 에서 사용할 msg
+					$('<input>').attr({
+						type: 'hidden',
+						id: 'vid_msg',
+						name: 'vid_msg',
+						value: result.vidRandom
+					}).appendTo($(_that.config.formObj));
+
+					_that.config.confirmCallback.call(); 
+
+					//document.form1.signed_msg.value = result.signData;
+					//document.form1.cert.value = "Y";
+					//document.form1.vid_msg.value = result.vidRandom;
+					//document.form1.submit();
+				}
+				else{
+					//if (Delfino.isPasswordError(result.status)) alert("비밀번호 오류 횟수 초과됨"); //v1.1.6,0 over & DelfinoConfig.passwordError = true
+					alert("error:" + result.message + "[" + result.status + "]");
+				}
+			}
+		},	
+        /**
+         * 공인인증 화면에서 닫기 버튼을 클릭하면 실행되는 callback 함수
+         * @param aResult
+         */
+        default_Cancel_Callback : function(aResult) {
+            var _this = window["cert_this"];
+            alert("ErrCode [" + aResult.code + "] ErrMsg [" +aResult.msg+"]");
+            _this.config.pubTriggerObj.focus();
+        },
+        
+        /**
+         * 공인인증 화면에서 확인 버튼을 클릭하면 실행되는 callback 함수
+         * @param aResult
+         */
+        default_SignDataCMS_Callback : function(aResult) {
+            var _this = window["cert_this"];
+            alert(aResult);
+            _this.config.pubTriggerObj.focus();
+            _this.config.formObj.hcMakeXecureWebField(aResult);
+            SubmitData(_this.config.formObj.attr("id"));
+        },
+        
+        /**
+         * 내부적으로 func() 또는 noTemplateLoad()를 호출한다.
+         * 결과적으로 인증 페이지 호출.
+         * @param _this
+         */
+        certLoad : function(_this){
+            _this.config.pubTriggerObj.hcOn("click.sendBtn");
+        }
+    };
+
+    secure.defaults = secure.prototype.defaults;
+
+    $.hcSecure = function(options) {
+        return new secure(options).init();
+    };
+
+})(jQuery, window, document);
+
+
+$(document).ready(function() {
+	var $form = $("input[enc=on]").parents("form");
+	if ($form.length > 0) {
+		if ($form.find("#nppfs-loading-modal").length == 0) 
+			$form.append("<div id=\"nppfs-loading-modal\" style=\"display:none;\"></div>");
+		if ($form.find(".nppfs-elements").length == 0 )
+			$form.append("<div class=\"nppfs-elements\" style=\"display:none;\"></div>");
+		if ($form.find(".nppfs-keypad-div").length == 0) 
+			//$form.append("<div id=\"nppfs-keypad-div\" style=\"display:none;\"></div>");
+			$form.append("<div class=\"nppfs-keypad-div\" style=\"display:none; line-height:0; font-size:0;\"></div>");
+	}
+});

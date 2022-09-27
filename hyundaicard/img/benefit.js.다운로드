@@ -1,0 +1,119 @@
+function fnScroll(leftFixedCls , rightFixedCls){//고정 시킬 좌 우 클래스 네임
+
+    var lfH = $('.' + leftFixedCls).outerHeight() , boxH = $('.box_benefit').height() , rgH = $('.' + rightFixedCls).outerHeight() , headerH = 128;
+    var boxTop = $('.box_benefit').offset().top + 49;//스크롤 event 시작지점
+    var rgTop = $('.' + rightFixedCls).offset().top;//right_column 스크롤 event 시작시점
+    var scrollBtm =  boxH - lfH + rgH + headerH;//스크롤 이벤트 중간 분기점
+    var scrollTop = $(window).scrollTop();
+    if(boxH > lfH){ //스크롤 이벤트 시작 조건 우측 콘텐트 길이가 길때 이벤트 발생
+        //스크롤이 진행된 상황에서 새로고침 시 class 조건
+        if(scrollTop > boxTop){ //left_fixed 조건
+            $('.' + leftFixedCls).addClass('fixed');
+        } else {
+            $('.' + leftFixedCls).removeClass('fixed');
+        }
+
+        if(scrollTop > rgTop){//right_fixed 조건
+            $('.' + rightFixedCls).addClass('fixed');
+        } else {
+            $('.' + rightFixedCls).removeClass('fixed');
+        }
+
+//        if(scrollTop > scrollBtm){
+//            $('.box_benefit').addClass('act');
+//        } else {
+//            $('.box_benefit').removeClass('act');
+//        }
+
+        $(window).scroll(function(){
+            var scrollTop = $(window).scrollTop();
+            var boxTop = $('.box_benefit').offset().top - 49;//스크롤 event 시작지점
+            var scrollBtm =  boxH - lfH + rgH + headerH;//스크롤 이벤트 중간 분기점
+            //console.log(scrollBtm , boxH , lfH , $(window).scrollTop())
+            if(scrollTop > boxTop){ //left_fixed 조건
+                $('.' + leftFixedCls).addClass('fixed');
+            } else {
+                $('.' + leftFixedCls).removeClass('fixed');
+            }
+
+            if(scrollTop > rgTop){//right_fixed 조건
+                $('.' + rightFixedCls).addClass('fixed');
+            } else {
+                $('.' + rightFixedCls).removeClass('fixed');
+            }
+
+//            if(scrollTop >= scrollBtm){
+//                $('.box_benefit').addClass('act');
+//            } else {
+//                $('.box_benefit').removeClass('act');
+//            }
+        });
+    }
+}
+// 220126 서브메인 고정 바 Q10048
+var myBen = {
+    init : function() {
+        _this = this
+        $('.sub_main_login .con1 .right').removeClass('scroll-able fix').removeAttr('style');
+        var leftH = $('.sub_main_login .con1 .left').outerHeight() + 100;
+        var rightH = $('.sub_main_login .con1 .right').outerHeight();
+        if(leftH > rightH){
+            _this.scroll();
+        } else {
+            $(window).off('scroll');
+        }
+    },
+    update : function(){
+        var headerConH = $('.header').outerHeight() + $('.header_sub').outerHeight(); // header height
+        $('.sub_main_login .con1 .right').addClass('scroll-able fix').css({'top': headerConH + 48 , 'bottom': '' , 'transition-property':'top' , 'transition-duration':'1s' , 'transition-delay':'.4s'});
+        _this.scroll();
+    },
+    scroll : function(){
+        var PossibleH = $('.sub_main_login .con1 .left').outerHeight() - $('.sub_main_login .con1 .right').outerHeight(); //스크롤 가능한 영역
+        $(window).on('scroll', function () {
+            var scrollTop = $(this).scrollTop(); // 스크롤 top 반환
+            var scrollH = PossibleH - scrollTop; //스크롤 위치 계산
+            var headerConH = $('.header').outerHeight() + $('.header_sub').outerHeight(); // header height
+            if (scrollTop > 0 && PossibleH > 0) {
+                $('.sub_main_login .con1 .right').addClass('scroll-able');// position fixed
+                if (scrollH < 0) {
+                    $('.sub_main_login .con1 .right').css({'top': 'auto', 'bottom' : 24}).removeClass('fix');
+                } else {
+                    $('.sub_main_login .con1 .right').addClass('scroll-able fix').css({'top': headerConH + 48 , 'bottom': ''});
+                } 
+            } else { 
+                    $('.sub_main_login .con1 .right').removeClass('scroll-able fix').removeAttr('style');
+            }
+        });
+    }
+}
+
+$(window).load(function(){
+    $(document).ready(function(){
+        $(document).on('click', '.accod_btn', function(){
+            var _this = $(this) , title = _this.text();
+            _this.attr('title' , title + ' 리스트 닫기').toggleClass('on').parents('.items').children('.accod_slide').slideToggle();
+            if(_this.is('.on') === true){
+                _this.attr('title' , title + ' 리스트 열기')
+            }
+        });
+    });
+    if ($('.sub_main_login').length) { myBen.init(); }
+
+    $(document).on('click', '.sub_main_login #moreBtn' , function(){ //더보기 버튼 클릭 시
+        myBen.update();
+    });
+
+});
+
+$(document).ready(function($){
+    $(".scroll_move").click(function(event){
+        event.preventDefault();
+        if( $(this.hash).closest(".accodWrap").hasClass("on") ) {
+            $('html,body').animate({scrollTop:$(this.hash).closest(".accodWrap").offset().top - 96}, 500);
+        } else {
+            $(this.hash).closest(".accodWrap").addClass("on").find(".accodSlide").slideDown(300);
+            $('html,body').animate({scrollTop:$(this.hash).closest(".accodWrap").offset().top - 96}, 500);
+        }
+    })
+});

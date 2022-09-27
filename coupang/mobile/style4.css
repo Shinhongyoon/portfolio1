@@ -1,0 +1,37 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+*{margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif; }
+a{text-decoration: none; color: #000;}
+
+#state{position: fixed; top: 0; right: 0;}
+
+#MyInfo{width: 423px; height: 330px; /* background: rgb(241, 241, 241); */ }
+#MyInfo span{font-size: 25px; font-weight: 800; margin-top: 65px; margin-bottom: 30px; display: block; text-align: center;}
+#MyInfo #profile{margin: 0 auto; display: block;}
+#MyInfo #name{margin-top: -50px; text-align: center;}
+#MyInfo #name #myName{font-size: 20px; font-weight: 500; text-align: center; display: inline-block;}
+#MyInfo #name #myinfoArrow{width: auto; height: auto; display: inline-block;}
+
+#MyInfo #productNumber{margin-top: -76px; display: flex; margin-left: 20px;}
+#MyInfo #productNumber div{margin-right: 25px;}
+#MyInfo #productNumber #number{font-size: 20px; display: block; font-weight: 400; margin-right: 30px; margin-left: 60px;}
+#MyInfo #productNumber #review{font-size: 10px; display: block; margin-top: -25px; margin-left: 30px;}
+
+#margin{width: 423px; height: 16px; background: #F6F6F6;}
+
+#category{/* width: 423px; */ /* background: #ffdde1; */ margin-top: -20px; margin-left: 30px; margin-bottom: 100px;}
+#category div .title{font-size: 20px; font-weight: 800; text-align: left; display: block; margin-bottom: 40px;}
+#category div .list{height: 40px; line-height: 40px; /* background: rgb(140, 218, 166); */ font-size: 18px; font-weight: 500; text-align: left; display: block; margin-top: -26px; padding-bottom: 46px; border-bottom: .6px solid #E1E1E1; background: url(../coupangImg/myinfo_arrow.png) no-repeat 340px center;}
+#category div .list:nth-child(4n){border-bottom: none;}
+#category div .list:nth-child(5){border-bottom: none;}
+#category #clientCenter .list:nth-child(4){border-bottom: .6px solid #E1E1E1;}
+#category #shoppingListWrap,#paymentInfo{margin-bottom: -50px;}
+
+
+
+
+
+nav#bottomMenu{position: fixed; top: 821px; background: #C11D2F; width: 423px; height: 99px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; overflow: hidden;}
+nav#bottomMenu #bottomMenuIcon img{display: inline-block; margin-right: 40px; margin-top: 20px;}
+nav#bottomMenu #bottomMenuIcon img:first-child{margin-left: 40px;}
+nav#bottomMenu #bottomMenuIcon img:last-child{margin-right: 0 ;}

@@ -1,0 +1,179 @@
+var CM_EVENT = {
+	"TRE5" : {
+		"/cpc/ca/CPCCA1601_01.hc" : "hyund00b", 
+		"/cpc/ca/CPCCA0141_01S.hc" : "hyund00d",
+		"/cpc/ca/CPCCA0101_01.hc" : "hyund00c",
+		"/cpc/cr/CPCCR0201_01.hc" : "hyund00a",
+		"/cpc/ca/CPCCA0143_02.hc" : "hyund00k",
+		"/cpc/ca/CPCCA0144_01.hc" : "hyund00l",
+		"/cpc/ca/CPCCA1601_02.hc" : "hyund00o"
+	},
+	"TPI" : {
+		"/cpc/ca/CPCCA1601_01.hc" : "hyund007",
+		"/cpc/ca/CPCCA0141_01S.hc" : "hyund009",
+		"/cpc/ca/CPCCA0101_01.hc" : "hyund008",
+		"/cpc/cr/CPCCR0201_01.hc" : "hyund006",
+		"/cpc/ca/CPCCA0143_02.hc" : "hyund00i",
+		"/cpc/ca/CPCCA0144_01.hc" : "hyund00j",
+		"/cpc/ca/CPCCA1601_02.hc" : "hyund00n"
+	},
+	"TGE2" : {
+		"/cpc/ca/CPCCA1601_01.hc" : "hyund001",
+		"/cpc/ca/CPCCA0141_01S.hc" : "hyund003",
+		"/cpc/ca/CPCCA0101_01.hc" : "hyund002",
+		"/cpc/cr/CPCCR0201_01.hc" : "hyund000",
+		"/cpc/ca/CPCCA0143_02.hc" : "hyund00f",
+		"/cpc/ca/CPCCA0144_01.hc" : "hyund00g",
+		"/cpc/ca/CPCCA1601_02.hc" : "hyund00m"
+	},
+	"MXB" : {
+		"/cpc/cr/CPCCR0201_01.hc" : "hyund00p",
+		"/cpc/ca/CPCCA0101_01.hc" : "hyund00q",
+		"/cpc/ca/CPCCA0141_01S.hc": "hyund00r",
+		"/cpc/ca/CPCCA0144_01.hc" : "hyund00s"
+	},
+	"TPE3" : {
+		"/cpc/cr/CPCCR0201_01.hc" : "hyund00t",
+		"/cpc/ca/CPCCA0101_01.hc" : "hyund00u",
+		"/cpc/ca/CPCCA0141_01S.hc": "hyund00v",
+		"/cpc/ca/CPCCA0143_02.hc" : "hyund00w",
+		"/cpc/ca/CPCCA0144_01.hc" : "hyund00x"
+	},
+	"pred" 	: "hyund00-",
+	"vp50" 	: "hyund004",
+	"vg50" 	: "hyund0",
+	"pgreen": "hyund00y",
+	"p1"	: "hyund00z",
+	"best6"	: "hyund00_",
+	
+	"a" 	: {
+		"vp50" : "hyund005",
+		"vg50" : "hyund00"
+	},
+	"evtChk" : {
+		"VIP00" : "hyund00h",
+		"VIG34" : "hyund00e"
+	}
+}
+
+var TTD_IMAGEPIXEL = {
+	"TRE5" : {
+		"/cpc/ca/CPCCA1601_01.hc"  : "27mi34u",
+		"/cpc/ca/CPCCA0141_01S.hc" : "1301nc6",
+		"/cpc/ca/CPCCA0101_01.hc"  : "guu6j40",
+		"/cpc/cr/CPCCR0201_01.hc"  : "s7kefwq",
+		"/cpc/ca/CPCCA0143_02.hc"  : "tider4v",
+		"/cpc/ca/CPCCA0144_01.hc"  : "x6l7m0t",
+		"/cpc/ca/CPCCA1601_02.hc"  : "cbyk5ky"
+	},
+	"TPI" : {
+		"/cpc/ca/CPCCA1601_01.hc"  :  "rgh6n0p",
+		"/cpc/ca/CPCCA0141_01S.hc" : "ftdky64",
+		"/cpc/ca/CPCCA0101_01.hc"  :  "6l19awe",
+		"/cpc/cr/CPCCR0201_01.hc"  :  "h3dnz8t",
+		"/cpc/ca/CPCCA0143_02.hc"  : "6j7ssk9",
+		"/cpc/ca/CPCCA0144_01.hc"  : "bmwmsxy",
+		"/cpc/ca/CPCCA1601_02.hc"  : "cwtpdnu"
+	},
+	"TGE2" : {
+		"/cpc/ca/CPCCA1601_01.hc"  : "c5r3c3x",
+		"/cpc/ca/CPCCA0141_01S.hc" : "hib4e52",
+		"/cpc/ca/CPCCA0101_01.hc"  : "eg7q8kh",
+		"/cpc/cr/CPCCR0201_01.hc"  : "f951egf",
+		"/cpc/ca/CPCCA0143_02.hc"  : "we8sfdp",
+		"/cpc/ca/CPCCA0144_01.hc"  : "ca0kl7l",
+		"/cpc/ca/CPCCA1601_02.hc"  : "mq69fo6"
+	},
+	"MXB" : {
+		"/cpc/cr/CPCCR0201_01.hc"  : "5da5kho",
+		"/cpc/ca/CPCCA0101_01.hc"  : "1a4oj4r",
+		"/cpc/ca/CPCCA0141_01S.hc" : "0y7iu17",
+		"/cpc/ca/CPCCA0144_01.hc"  : "q63wixe"
+	},
+	"TPE3" : {
+		"/cpc/cr/CPCCR0201_01.hc" : "yqmsz1r",
+		"/cpc/ca/CPCCA0101_01.hc" : "h9fwqsw",
+		"/cpc/ca/CPCCA0141_01S.hc": "fxzbvpu",
+		"/cpc/ca/CPCCA0143_02.hc" : "djozpus",
+		"/cpc/ca/CPCCA0144_01.hc" : "xhnjirc"
+	},
+	"pred" 	: "8b94ime",
+	"vp50" 	: "osov3io",
+	"vg50" 	: "xw0mf7a",
+	"pgreen": "6ohe2ft",
+	"p1"	: "9loi9a8",
+	"best6"	: "8iwphyn",
+	"a" 	: {
+		"vp50" : "4rrzsp8",
+		"vg50" : "tdw9tmx"
+	},
+	"evtChk" : {
+		"VIP00" : "bcdtd2d",
+		"VIG34" : "4rxb6vi"
+	}
+}
+
+CM_EVENT["TRME5"] = CM_EVENT["TRE5"];
+CM_EVENT["TPME3"] = CM_EVENT["TPE3"];
+TTD_IMAGEPIXEL["TRME5"] = TTD_IMAGEPIXEL["TRE5"];
+TTD_IMAGEPIXEL["TPME3"] = TTD_IMAGEPIXEL["TPE3"];
+
+function inno_track(key1, key2) {
+	var trackingId = CM_EVENT[key1];
+	if (trackingId != undefined && key2 != undefined) trackingId = trackingId[key2];
+	if (trackingId != undefined && typeof gtag == 'function') {
+		gtag('event', 'conversion', {
+			'allow_custom_scripts': true,
+			'send_to': 'DC-11856577/pagev0/' + trackingId + '+standard'
+		});
+	}
+	if (trackingId != undefined && typeof wpts != 'undefined' && wpts.tag) {
+		wpts.tag({
+			ty : 'conversion',
+			mud : {
+				'allow_custom_scripts': true,
+				'send_to': 'DC-11856577/pagev0/' + trackingId + '+standard'
+			}
+		});
+	}
+	trackingId = TTD_IMAGEPIXEL[key1];
+	if (trackingId != undefined && key2 != undefined) trackingId = trackingId[key2];
+	if (trackingId != undefined) 
+		$(document.body).append('<img height="1" width="1" style="border-style:none;" alt="" src="https://insight.adsrvr.org/track/pxl/?adv=0krrt7u&ct=0:' + trackingId + '&fmt=3"/>');
+}
+
+/*(var TG360_TRACKING_URL = [
+	"/",
+	"/index.jsp",
+	"/cpm/mb/CPMMB0101_01.hc",
+	"/cpm/mb/CPMMB0101_02.hc",
+	"/cpa/bl/CPABL0101_01.hc",
+	"/cpa/ma/CPAMA0101_01.hc"
+];*/
+
+function noncard_track(_url) {
+	/*for (var i in TG360_TRACKING_URL) {
+		if (TG360_TRACKING_URL[i] == _url) {
+			wpts.tag({
+				ty : 'home',
+				mud : { }
+			});
+			break;
+		}
+	}*/
+}
+var onload_tracking = function() {
+	if (typeof wpts != 'undefined' && wpts.tag) {
+		wpts.tag({
+			ty : 'home',
+			mud : { }
+		});
+	}
+}
+if (window.location.hostname 
+		&& (window.location.hostname.indexOf('card.hyundaicard.com') >= 0 || window.location.hostname.indexOf('tcard3.hyundaicard.com') >= 0) 
+		&& typeof jQuery == 'undefined') {
+	window.onload = onload_tracking;
+} else {
+	$(window).load(onload_tracking);
+}

@@ -1,0 +1,29 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+*{margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif; }
+#content{margin: 0 20px;}
+
+#state{position: fixed; top: 0; right: 20px;}
+
+#search{display: flex;}
+#search img{width: 14px; height: 21px; display: block; margin-top: 80px; margin-left: 200px; position: absolute; left: -175px;}
+#search #searchBox{width: 276px; height: 44px; border: 1px solid #444; border-radius: 25px; margin: 70px auto; margin-left: 40px;}
+#search span{font-size: 17px; font-weight: 700; display: block; margin-top: 80px; margin-right: 14px;}
+
+#searchWords{margin-top: -30px;}
+#searchWords span{font-size: 20px; font-weight: 700; display: block; margin-left: 10px;}
+#searchWords img{position: relative; display: block; margin-top: -15px; margin-left: 344px;}
+#searchWords .rec{width: 90px; height: 30px; background: #FFEEEE; border-radius: 25px; display: inline-block; 
+margin-top: 30px; margin-left: 10px;}
+#searchWords .rec #first{font-size: 10px; color: #C11D2F; position: relative; text-align: center;}
+#searchWords .rec #second{font-size: 10px; color: #C11D2F;}
+#searchWords .rec #third{font-size: 10px; color: #C11D2F;}
+
+#searchWords .close{position: absolute; left: 0; margin-right: 100px;}
+
+
+
+
+/* nav#bottomMenu{position: fixed; top: 821px; background: #C11D2F; width: 423px; height: 99px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; overflow: hidden;}
+nav#bottomMenu #bottomMenuIcon img{display: inline-block; margin-right: 40px; margin-top: 20px;}
+nav#bottomMenu #bottomMenuIcon img:first-child{margin-left: 40px;}
+nav#bottomMenu #bottomMenuIcon img:last-child{margin-right: 0 ;} */

@@ -1,0 +1,118 @@
+@charset "utf-8";
+
+/* 로그인 */
+#container.sub_login { width:100%; height:100%; }
+.sub_login {padding:0;}
+.sub_login .content { display:flex; display:-ms-flexbox; align-items:center; justify-content:space-between; flex-direction:column; width:100%; height:100%; }
+/* .sub_login .content:after {content:''; display: inline-block; width:0; height:100%; vertical-align:middle} */
+.sub_login h1 { width:100%; height:54px; padding-top:26px; padding-left:40px; }
+.sub_login h1 a {display:inline-block; width:138px; height:28px; background:url(/docfiles/resources/pc/images/common/logo/logo_hyundaicard.png) no-repeat 0 0; background-size:138px 28px; }
+.sub_login .list_login_link {display:flex; width:1206px; margin:0 auto; padding-bottom:36px; }
+.sub_login .list_login_link li {flex:1; padding:0 15px}
+.sub_login .list_login_link li:first-child {padding-left:0}
+.sub_login .list_login_link li:last-child {padding-right:0}
+.sub_login .list_login_link li p {margin-bottom:16px}
+.sub_login .wrap_login {position:relative; width:402px; margin:80px auto 115px; }
+.sub_login .wrap_login h2 {position:absolute; left:0; top:35px; right:0}
+.sub_login .wrap_login .bottom_login {position:absolute; left:15px; bottom:15px; right:15px; text-align:center}
+.sub_login .wrap_login .bottom_login .txt_ref {position: relative; margin-bottom:32px}
+.sub_login .wrap_login .bottom_login .txt_ref > * {vertical-align:middle}
+.sub_login .wrap_login .bottom_login .txt_ref .btn_tooltip01 {opacity:.64;}
+.sub_login .wrap_login .bottom_login .txt_ref > .p2_m_lt_1ln {opacity:.48;}
+.sub_login .wrap_login .bottom_login .box_btn [class^='btn64_'] {display:block; width:100%}
+.sub_login .wrap_login .tab {display:flex; position:absolute; z-index:1; left:0; top:91px; right:0}
+.sub_login .wrap_login .tab:before { position:absolute; bottom:0; right:0; left:0; z-index:1; height:1px; background-color:#ebebeb; content:''; }
+.sub_login .wrap_login .tab:after {content:''; position:absolute; left:0; bottom:0; z-index:2;  height:1px; background-color:#000; transition:transform 300ms; }
+/* [HPRQA-6840][로그인] 인증 수단 컨트롤기능 추가.sub_login .wrap_login .tab.tab4:after {width:25%}
+.sub_login .wrap_login .tab[data-active-bar='1']:after {transform:translateX(0)}
+.sub_login .wrap_login .tab.tab4[data-active-bar='2']:after {transform:translateX(100%)}
+.sub_login .wrap_login .tab.tab4[data-active-bar='3']:after {transform:translateX(200%)}
+.sub_login .wrap_login .tab.tab4[data-active-bar='4']:after {transform:translateX(300%)} */
+.sub_login .wrap_login .tab.tab4:after {width:25%}
+.sub_login .wrap_login.tab1 .h2_b_ctr.tab_header { margin-top:20px;}
+.sub_login .wrap_login.tab1 .tab li a { opacity : 0 !important;}
+.sub_login .wrap_login.tab2 .tab:after {width:50% !important}
+.sub_login .wrap_login.tab3 .tab:after {width:33.3333% !important}
+.sub_login .wrap_login.tab4 .tab:after {width:25% !important}
+.sub_login .wrap_login .tab[data-active-bar='1']:after {transform:translateX(0)}
+.sub_login .wrap_login .tab[data-active-bar='2']:after {transform:translateX(100%)}
+.sub_login .wrap_login .tab[data-active-bar='3']:after {transform:translateX(200%)}
+.sub_login .wrap_login .tab[data-active-bar='4']:after {transform:translateX(300%)}
+/* [HPRQA-6840][로그인] 인증 수단 컨트롤기능 추가 */
+.sub_login .wrap_login .tab li {flex:1; }
+.sub_login .wrap_login .tab li a {display:block; width:100%; opacity:.48; height:56px; font-weight:500; line-height:56px;}
+.sub_login .wrap_login .tab li.active a {opacity:1; font-weight:600;}
+.sub_login .wrap_login .bottom_form {position:absolute; right:0; bottom:-35px;}
+.sub_login .wrap_login .bottom_form:after {content:''; display: inline-block; clear: both}
+.sub_login .wrap_login .bottom_form ul.links {float:right; font-size:0}
+.sub_login .wrap_login .bottom_form ul.links li {float: left}
+.sub_login .wrap_login .bottom_form ul.links li ~ li {margin-left:12px}
+.sub_login .wrap_login .bottom_form ul.links li .ico_app {display:inline-block; width:16px; height:16px; margin:2px 4px 0 0; vertical-align:top; background:url(/docfiles/resources/pc/images/common/badge/badge_Hyundaicard.png) 50% 50% no-repeat; background-size:100%}
+.sub_login .wrap_login .box_login {position:relative; height:636px; border:1px solid #ccc; border-radius:16px; padding:148px 24px 0}
+.sub_login .wrap_login .group_login .error {color:#ff0000}
+.sub_login .wrap_login .group_login.id .method_login {padding-top:64px}
+.sub_login .wrap_login .group_login.pin .method_login {padding-top:64px}
+.sub_login .wrap_login .group_login.pin .pin_area {padding-top:32px}
+.sub_login .wrap_login .group_login.pin .pin_area.input {padding-top:0}
+.sub_login .wrap_login .group_login.pin .pin_area.not .not_support {margin-top:36px; padding:24px 0; border-radius:8px; background-color:#f5f5f5; text-align:center}
+.sub_login .wrap_login .group_login.pin .pin_area.not .not_support .icons {margin-top:24px}
+.sub_login .wrap_login .group_login.pin .pin_area.not .not_support .icons img {height:32px}
+.sub_login .wrap_login .group_login.pin .pin_area.not .not_support .icons ~ p {margin-top:12px}
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber {position:relative; margin:26px auto 0; width:228px; height:auto; max-height:58px; }
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber input[type="password"] { width:100%; height:100%; font-family:'pass'; font-size:52px; letter-spacing:10px; border-radius:8px; outline:0; background-color:transparent; cursor:pointer; caret-color:transparent; }
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .bg_pin { position:static; opacity:0.15; z-index:-1;  }
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin { position:absolute; top:0; left:0; }
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle {height:40px; padding-top:10px; text-align:center; font-size:0}
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle .circle {display:inline-block; width:20px; height:20px; border-radius:100%; border:2px solid #000; transition:background-color 200ms}
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle .circle ~ .circle {margin-left:20px}
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="1"] .n1,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="2"] .n1,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="2"] .n2,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="3"] .n1,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="3"] .n2,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="3"] .n3,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="4"] .n1,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="4"] .n2,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="4"] .n3,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="4"] .n4,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="5"] .n1,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="5"] .n2,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="5"] .n3,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="5"] .n4,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="5"] .n5,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="6"] .n1,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="6"] .n2,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="6"] .n3,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="6"] .n4,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="6"] .n5,
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle[data-input-length="6"] .n6 {background-color:#000}
+.sub_login .wrap_login .group_login.pin .pin_area .input_pinnumber .pin_circle.error .circle {border-color:#ff0000}
+.sub_login .wrap_login .group_login.pin .pin_area .keypad {position:absolute; left:31px; bottom:31px; right:31px; background-color:rgba(0,0,0,.05); min-height:200px}
+.sub_login .wrap_login .group_login.app .method_login {padding-top:40px;}
+.sub_login .wrap_login .group_login.app .method_login .time {margin-top:16px; color:#0070f0}
+.sub_login .wrap_login .group_login.app .method_login .qr {width:200px; margin:8px auto 0; text-align:center; }
+.sub_login .wrap_login .group_login.app .method_login .qr img { margin:0 auto; width:200px;}
+/* .sub_login .wrap_login .group_login.app .method_login .qr + p { margin-top:28px; } 2021-12-31 Q10071: Defect에 간격 없다고 하여 삭제 */
+.sub_login .wrap_login .group_login.app .method_login .code {margin-top:26px}
+.sub_login .wrap_login .group_login.app .method_login .refresh {position:absolute; left:44px; bottom:0; right:44px; height:calc(312px + 44px); background-color:rgba(255,255,255,.98); text-align:center}
+.sub_login .wrap_login .group_login.app .method_login .refresh:after {content:''; display:inline-block; width:0; height:100%; vertical-align:middle}
+.sub_login .wrap_login .group_login.app .method_login .refresh .box_btn {display:inline-block; vertical-align:middle; width:160px; padding-bottom:44px}
+.sub_login .wrap_login .group_login.app .method_login .refresh .box_btn [class^="btn"] {width:100%}
+.sub_login .wrap_login .group_login.cert .tab_default { margin-top:32px; }
+.sub_login .wrap_login .group_login.cert .tab_default a { margin-right:4px; width: calc(50% - 4px); text-align:center; }
+.sub_login .wrap_login .group_login.cert .tab_default a:last-child { margin-right:0; }
+.sub_login .wrap_login .group_login.cert .method_login { position:relative; padding-top:24px; display:flex; display:-ms-flexbox; height:307px; align-items:center; justify-content:center;}
+.sub_login .wrap_login .group_login.cert .method_login .list_sel_inp { position:absolute; top:24px; right:0; left:0; display:flex; display:-ms-flexbox;}
+.sub_login .wrap_login .group_login.cert .method_login .list_sel_inp > li { padding:0; width:175px; float:none;}
+.sub_login .wrap_login .group_login.cert .not_support { position:absolute; right:0; left:0; bottom:36px; padding:24px 0; border-radius:8px; background-color:#f5f5f5; text-align:center}
+.sub_login .wrap_login .group_login.cert .not_support .icons {margin-top:24px}
+.sub_login .wrap_login .group_login.cert .not_support .icons img {height:32px}
+.sub_login .wrap_login .group_login.cert .not_support .icons ~ p {margin-top:12px}
+.sub_login .wrap_login .group_login.cert .not_btm_btn .method_login { height:100%; align-items:inherit; }
+.sub_login .wrap_login .cert_box .pin_area { padding-top:130px; }
+.sub_join .pin_number_guide { margin-top:64px; margin-bottom:80px; }
+.sub_join .pin_number_guide li { line-height:22px; color:#858585; }
+
+/* 가상 키패드 핀 로그인 */
+.sub_join .ui-pinpad-wrap { margin-top:4px; } /* 간편번호 등록 */
+.sub_gate .ui-pinpad-wrap { position:absolute; right:32px; bottom:32px; left:32px; } /* 간편번호 로그인 */

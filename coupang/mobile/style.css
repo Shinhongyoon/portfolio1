@@ -1,0 +1,70 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+*::-webkit-scrollbar{display: none; margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif;}
+a{text-decoration: none; color: #000;}
+
+#state{position: fixed; top: 0; right: 20px;}
+
+header{z-index: 999; width: 100%; position: fixed; top: 0; background: #fff; box-shadow: 0 0 20px rgb(223, 223, 223); margin-left: -8px; border-top-left-radius: 56px; border-top-right-radius: 56px;}
+header #logo{padding-top: 60px; text-align: center; padding-bottom: 30px;}
+header #bell img{margin-top: -31px; float: right; margin-right: 25px;}
+
+nav#bottomMenu{position: fixed; top: 821px; right: 0; background: #C11D2F; width: 423px; height: 99px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; z-index: 999;}
+nav#bottomMenu #bottomMenuIcon img{display: inline-block; margin-right: 40px; margin-top: 20px;}
+nav#bottomMenu #bottomMenuIcon img:first-child{margin-left: 40px;}
+nav#bottomMenu #bottomMenuIcon img:last-child{margin-right: 0;}
+
+#mainWrap{margin-bottom: 100px;}
+#mainWrap #topSearch{position: absolute; top: 150px; left: 60px; width: 300px; height: 40px; border: 1px solid #444; border-radius: 23px; background: white; background: url(../coupangImg/search.png) no-repeat 93% 63%;}
+#mainWrap #goodsList{margin-top: 220px; margin-left: -12px;}
+#mainWrap #menuList{margin-top: 30px; height: 200px; margin-left: 30px;}
+#mainWrap #menuList .first{display: flex;}
+#mainWrap #menuList .second{display: flex; margin-top: 40px;}
+#mainWrap .first p{position: absolute; top: 613px; font-size: 14px; font-weight: 400;}
+#mainWrap .second p{position: absolute; top: 714px; font-size: 14px; font-weight: 400;}
+#mainWrap #delievery{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px;  margin-right: 40px; background: url(../coupangImg/R-delievery.png) no-repeat 50%}
+#mainWrap #fresh{ width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px;  margin-right: 40px; background: url(../coupangImg/R-fresh.png) no-repeat 50%}
+#mainWrap #chuseock{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px;  margin-right: 40px; background: url(../coupangImg/chuseok.png) no-repeat 50%}
+#mainWrap #chuseock p{margin-left: 15px;}
+#mainWrap #beauty{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px; background: url(../coupangImg/beauty1.png) no-repeat 50%;}
+#mainWrap #beauty p{margin-left: 15px;}
+#mainWrap #timesale{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px; margin-right: 40px; background: url(../coupangImg/timesale.png) no-repeat 50%;}
+#mainWrap #digital{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px;  margin-right: 40px; background: url(../coupangImg/digital.png) no-repeat 50% 67%}
+#mainWrap #fashion{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px;  margin-right: 40px; background: url(../coupangImg/fashion.png) no-repeat 50% 67%}
+#mainWrap #more{width: 60px; height: 60px; background: white; box-shadow: 3px 3px 5px #ccc; border-radius: 6px; background: url(../coupangImg/plus.png) no-repeat 50%}
+
+/* 홍윤님을 위한 추천상품 */
+#recomend{margin-left: 20px; margin-top: 40px; position: relative;}
+#recomend p{font-size: 20px; font-weight: 700;}
+#recomend span{position: relative; top: -50px; left: 320px; font-size: 12px; font-weight: 700; padding: 10px; color: #C11D2F; display: inline-block; margin-bottom: 5px;}
+#recomend .rec-group{display: flex; }
+#recomend img{position: relative; top: -25px; z-index: -999;}
+#recomend .rec-group #product1{position: absolute; top: 87px; left: 18px; z-index: 997; border-bottom: 1px solid #E1E1E1; padding-bottom: 20px;}
+#recomend .rec-group #product2{position: absolute; top: 87px; left: 152px; z-index: 997; border-bottom: 1px solid #E1E1E1; padding-bottom: 20px;}
+#recomend .rec-group #product3{position: absolute; top: 87px; left: 293px; z-index: 997; border-bottom: 1px solid #E1E1E1; padding-bottom: 20px;}
+
+#recomend .rec-group a #text1{font-size: 12px; width: 91px; position: absolute; top: 192px; left: 19px;}
+#recomend .rec-group a #text2{font-size: 12px; width: 91px; position: absolute; top: 192px; left: 152px;}
+#recomend .rec-group a #text3{font-size: 12px; width: 88px; position: absolute; top: 192px; left: 290px;}
+#recomend .rec-group a .price{width: 85px; margin-top: -119px; margin-left: 20px; z-index: 9999;}
+#recomend .rec-group a .price .text1-1{font-size: 14px; font-weight: bold; color: #C11D2F; display: inline-block;}
+#recomend .rec-group a .price .sale4pro{font-size: 10px; color: #C11D2F; display: inline-block; margin-top: 18px;}
+#recomend .rec-group a .price .star{padding-top: 15px; }
+ 
+/* 2022 추석 선물관 */
+#chuseock2{margin-left: 20px; margin-top: 40px; position: relative;}
+#chuseock2 p{font-size: 20px; font-weight: 700;}
+#chuseock2 span{position: relative; top: -50px; left: 320px; font-size: 12px; font-weight: 700; padding: 10px; color: #C11D2F; display: inline-block; margin-bottom: 5px;}
+#chuseock2 .rec-group{display: flex; }
+#chuseock2 img{position: relative; top: -25px; z-index: -999;}
+#chuseock2 .rec-group #product1{position: absolute; top: 87px; left: 18px; z-index: 997; border-bottom: 1px solid #E1E1E1; padding-bottom: 20px;}
+#chuseock2 .rec-group #product2{position: absolute; top: 87px; left: 152px; z-index: 997; border-bottom: 1px solid #E1E1E1; padding-bottom: 20px;}
+#chuseock2 .rec-group #product3{position: absolute; top: 103px; left: 293px; z-index: 997; border-bottom: 1px solid #E1E1E1; padding-bottom: 34px;}
+
+#chuseock2 .rec-group .vector{position: absolute; top: 203px; left: 18px; z-index: 999;}
+
+#chuseock2 .rec-group a .text{font-size: 12px; width: 91px; position: absolute; top: 229px; left: 19px;}
+#chuseock2 .rec-group a #text2{font-size: 12px; width: 91px; position: absolute; top: 192px; left: 152px;}
+#chuseock2 .rec-group a #text3{font-size: 12px; width: 88px; position: absolute; top: 192px; left: 290px;}
+#chuseock2 .rec-group a .price{width: 85px; margin-top: -126px; margin-left: 20px; z-index: 9999;}
+#chuseock2 .rec-group a .price .cancleLine{color: #bbb; font-size: 10px;}
+#chuseock2 .rec-group a .price .text1-2{color: #C11D2F; font-size: 14px; font-weight: bold;}

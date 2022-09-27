@@ -1,0 +1,167 @@
+$(window).on('load', function(){
+    // Q10582: 22.02.03 스크롤 인터렉션 제어 변수 추가
+    var select = {  // 셀렉터 변수
+        window: $(window),
+        rightContent: $('.right_content'),
+        footer: $('.main_footer'),
+        cardPlate: $(".card_plate"),
+        secMainContent: $('.sec_main_content'),
+    }
+    var timer = null;
+    
+    function onScrollCheck() {
+        var platesH = 0;
+        var gridListTop = $(".grid_list").offset().top - $("header").outerHeight();
+        
+        // 상단 영역 스크롤
+        var mainTopScroll = function() {
+            var sT = select.window.scrollTop();
+            var cardPlateT = select.cardPlate.offset().top
+            var scrollCase = cardPlateT - $("header").outerHeight()
+
+            if(sT >= scrollCase - 19) { 
+                select.rightContent.removeClass('scroll-able');
+            }else {
+                select.rightContent.addClass('scroll-able').css("top", sT);
+            }
+        }
+
+        // 하단 영역 스크롤
+        var mainBottomScroll = function() {
+            var sH = $('body').prop('scrollHeight');
+            var sT = select.window.scrollTop();
+            var wH = select.window.innerHeight();
+            var scrVal = sT + wH;
+            var gridListTop = $(".grid_list").offset().top - $("header").outerHeight();
+
+            if( sT >= gridListTop && (sH - 160) >= scrVal ) {
+                select.footer.addClass('scroll-able').css('top', sT);
+            }else {
+                select.footer.remove('scroll-able');
+            }
+        }
+        
+        // 화면비례 검사 스크롤 이벤트 실행
+        for (var i = 0; i < select.cardPlate.length; i++) {
+            platesH += select.cardPlate.eq(i).innerHeight()
+        }
+        if ( select.rightContent.innerHeight() <= platesH + 320 && select.footer.innerHeight() >= 770) {
+            select.window.on('scroll', mainTopScroll);
+        }
+        if (select.secMainContent.innerHeight() >= 770) {
+            select.footer.css('top', gridListTop);
+            select.window.on('scroll', mainBottomScroll);
+        }
+
+        if(select.window.innerHeight() <= 800) {
+            select.window.off('scroll', mainTopScroll);
+            select.window.off('scroll', mainBottomScroll);
+        }
+    }
+
+    onScrollCheck();
+    select.window.on('resize', function(){  // resize 이벤트
+        clearTimeout( timer );
+        timer = setTimeout(onScrollCheck, 300);
+    })
+})
+
+// 접근성 이슈로 탭 속성 추가 2022-04.11
+$(function(){
+    $('.box_login_tab.tab').on('click', '> li > a', function(){
+        $('.box_login_tab.tab').find('a').removeAttr('title');
+        $(this).attr('title', '선택됨');
+    });
+});
+
+// $(window).bind('load' , function(){
+//     var leftHt = $('.left_col').height() ,
+//     topBannerHt = $('#topBannerWrapCms').height() ,
+//     rightHt = $('.right_col').height() , 
+//     eventPoint = $('.card_plate').eq(0).offset().top - (144 - topBannerHt),
+//     footerPoint = $('.footer_mark').offset().top + 196 - $(window).height(),
+//     topEventYn = leftHt > rightHt + eventPoint ,
+//     ftEventYn =  leftHt > rightHt ,
+//     eventYn;
+//     $('.main_container').removeClass('type_01');
+//     var mainInter = {
+//         init : function(){
+//             _this = this;
+//             _this.event();
+//             eventYn = true;
+//         },
+//         event : function(){
+//             _this = this;
+//            scrollTop = $(window).scrollTop();
+//            conRight = ($(window).width() - $('.content').width())/2,//fixed right 값 계산
+//            mainInter.reload();
+//            $(document).on('scroll' , function(){
+//                 scrollTop = $(window).scrollTop();
+//                 if(topEventYn === true && ftEventYn === true && $(window).width() >= 1200){
+//                     footerPoint = footerPoint + (eventPoint - topBannerHt);
+//                     $('.main_container').addClass('type_01');
+//                     $('.right_col').css({'right': conRight + 'px'});
+//                     mainInter.action();
+//                 } else if(topEventYn === false && ftEventYn === true && $(window).width() >= 1200){
+//                     $('.main_container').addClass('type_02');
+//                     mainInter.footerAction();
+//                 }
+//             });
+//         },
+//         action : function(){
+//             _this = this;
+//             if(scrollTop >= eventPoint){//우측 absolute 시점
+//                 $('.right_col').addClass('scroll-able').css({'top': (eventPoint - topBannerHt)+ 'px'}); 
+//             } else {
+//                 $('.right_col').removeClass('scroll-able').css({'top': ''}); 
+//             }
+//         },
+//         footerAction : function(){
+//             if(scrollTop >= footerPoint){
+//                 $('.main_footer').addClass('scroll-able').css({'right': conRight + 'px'});    
+//             } else {
+//                 $('.main_footer').removeClass('scroll-able').css({'right': ''});    
+//             }
+//         },
+//         reload : function(){
+//             scrollTop = $(window).scrollTop();
+//             if(topEventYn === true && ftEventYn === true && $(window).width() >= 1200){
+//                 footerPoint = footerPoint + (eventPoint - topBannerHt);
+//                 $('.main_container').addClass('type_01');
+//                 $('.right_col').css({'right': conRight + 'px'});
+//                 mainInter.action();
+//             } else if(topEventYn === false && ftEventYn === true && $(window).width() >= 1200){
+//                 mainInter.footerAction();
+//             }
+//         },
+//         reset : function(){
+//             $('.main_container').removeClass('type_01');
+//             $('.right_col , .main_footer').css({'right': '' , 'top':''}).removeClass('scroll-able');
+//             $(document).off('scroll');
+//         }
+        
+//     }
+//     mainInter.init();
+    
+//     $(window).on('resize' , function(e){
+//         if($(window).width() < 1200){
+//             if(eventYn === true){
+//                 mainInter.reset();
+//                 console.log('이벤트 중단')
+//             }
+//             eventYn = false;
+//         } else {
+//             if(eventYn === false){
+//                 mainInter.event();
+//                 console.log('이벤트 실행')
+//             }
+//             eventYn = true;
+//         }
+//     });
+
+    
+// });
+
+// $(document).ready(function(){
+   
+// });

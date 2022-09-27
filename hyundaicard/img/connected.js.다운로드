@@ -1,0 +1,1534 @@
+
+try{
+
+try{
+/**
+ * Created by jhkoo77 on 2018-05-08.
+ */
+
+// Polyfill for Uint8Array.slice for IE and Safari
+// https://tc39.github.io/ecma262/#sec-%typedarray%.prototype.slice
+    if (!Uint8Array.prototype.slice) {
+        Object.defineProperty(Uint8Array.prototype, 'slice', {
+                value: Array.prototype.slice
+        });
+    }
+
+(function(GLOBAL){
+    GLOBAL.wizvera = GLOBAL.wizvera || {};
+    GLOBAL.wizvera.kryptos = GLOBAL.wizvera.kryptos || {};
+})(window);
+(function(GLOBAL) {
+var wizvera = GLOBAL.wizvera;
+// var dbName = 'Wizvera Connected';
+// var storageName = 'ConnectedKeyStorage';
+// var privateKeyName = 'two';
+// var logger = GLOBAL.logger;
+
+var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+
+try {
+    IDBTransaction.READ_WRITE = IDBTransaction.READ_WRITE || 'readwrite';
+} catch(e){}
+
+function openIndexedDb(name, storageNameArray, version, upgradeDb) {
+    // var _dbName = dbName;
+    var _dbName = name;
+    var db;
+    return new Promise(function(resolve, reject) {
+        var request = indexedDB.open(_dbName, version || 2);
+        request.onsuccess = function (evt) {
+            db = request.result;
+            db.error = function(evt) {
+                setTimeout(function(){reject(new Error('error', 'error on indexedDB'))}, 100);
+            }
+            setTimeout(function(){resolve(db)}, 100);
+        };
+
+        request.onerror = function (evt) {
+            if(evt.target && evt.target.error) {
+                setTimeout(function(){reject(evt.target.error)}, 100);
+                return;
+            }
+            setTimeout(function(){reject(new Error('error', 'error on opening indexedDB'))}, 100);
+        };
+
+        request.onupgradeneeded = function (evt) {
+            db = evt.currentTarget && evt.currentTarget.result || evt.target && evt.target.result;
+            for(var i=0;i<storageNameArray.length;i++) {
+                storageName = storageNameArray[i]
+                if(!(db.objectStoreNames[i] && db.objectStoreNames[i] == storageName)) {
+                    var keyStore = db.createObjectStore(storageName, {});
+                }
+            }
+        };
+    });
+}
+
+function add(db, key, data, storageName) {
+    return new Promise(function(resolve, reject) {
+        storageName = storageName || db.objectStoreNames[0];
+        var transaction = db.transaction([storageName], IDBTransaction.READ_WRITE);
+        var result;
+
+        transaction.oncomplete = function(evt) {
+            setTimeout(function(){resolve()}, 100);
+        };
+
+        transaction.onerror = function(evt) {
+            if(evt.target && evt.target.error) {
+                setTimeout(function(){reject(evt.target.error)}, 100);
+                return;
+            }
+            setTimeout(function(){reject(new Error('error', 'error on put Data'))}, 100);
+        };
+
+        var objectStore = transaction.objectStore(storageName);
+
+        var request1 = objectStore.add(data, key);
+        request1.onsuccess = function(evt) {
+            result = true;
+        };
+    });
+}
+
+function put(db, key, data, storageName) {
+    return new Promise(function(resolve, reject) {
+        storageName = storageName || db.objectStoreNames[0];
+        var transaction = db.transaction([storageName], IDBTransaction.READ_WRITE);
+        var result;
+
+        transaction.oncomplete = function(evt) {
+            result ? setTimeout(function(){resolve()}, 100) : setTimeout(function(){reject(new Error('error', 'error on put Data request'))}, 100);
+        };
+
+        transaction.onerror = function(evt) {
+            if(evt.target && evt.target.error) {
+                setTimeout(function(){reject(evt.target.error)}, 100);
+                return;
+            }
+            setTimeout(function(){reject(new Error('error', 'error on put Data transaction'))}, 100);
+        };
+
+        var objectStore = transaction.objectStore(storageName);
+
+        var request1 = objectStore.put(data, key);
+        request1.onsuccess = function(evt) {
+            result = true;
+        };
+    });
+}
+
+function get(db, key, storageName) {
+    return new Promise(function(resolve, reject) {
+        storageName = storageName || db.objectStoreNames[0];
+        var transaction = db.transaction([storageName], IDBTransaction.READ_WRITE);
+        var result;
+
+        transaction.oncomplete = function(evt) {
+            if(result)
+                setTimeout(function(){resolve(result)}, 100);
+            else setTimeout(function(){reject(new Error('error', 'No Data on that key'))}, 100);
+        };
+
+        transaction.onerror = function(evt) {
+            if(evt.target && evt.target.error) {
+                setTimeout(function(){reject(evt.target.error)}, 100);
+                return;
+            }
+            setTimeout(function(){reject(new Error('error', 'error on get Data transaction'))}, 100);
+        };
+
+        var objectStore = transaction.objectStore(storageName);
+
+        var request = objectStore.get(key);
+        request.onsuccess = function(evt) {
+            result = request.result;
+        };
+    });
+}
+
+function remove(db, key, storageName) {
+    return new Promise(function(resolve, reject) {
+        storageName = storageName || db.objectStoreNames[0];
+        var transaction = db.transaction([storageName], IDBTransaction.READ_WRITE);
+        var result;
+
+        transaction.oncomplete = function(evt) {
+            result ? setTimeout(function(){resolve()}, 100) : setTimeout(function(){reject(new Error('error', 'error on remove Data request'))}, 100);
+        };
+
+        transaction.onerror = function(evt) {
+            if(evt.target && evt.target.error) {
+                setTimeout(function(){reject(evt.target.error)}, 100);
+                return;
+            }
+            setTimeout(function(){reject(new Error('error', 'error on remove Data transaction'))}, 100);
+        };
+
+        var objectStore = transaction.objectStore(storageName);
+
+        var request1 = objectStore.delete(key);
+        request1.onsuccess = function(evt) {
+            result = true;
+        };
+    });
+}
+
+function resetDb(db) {
+    return new Promise(function(resolve, reject) {
+        var dbName = db.name;
+        var version = db.version;
+        var storageNameArray = [];
+        for(var i=0;i<db.objectStoreNames.length;i++) {
+            storageNameArray.push(db.objectStoreNames[i]);
+        }
+        var request = indexedDB.deleteDatabase(dbName);
+
+        request.onsuccess = function(evt) {
+            db.close();
+            setTimeout(function() {
+                openIndexedDb(dbName, storageNameArray, version).then(function(returnedDb) {
+                    db = returnedDb;
+                    resolve(db);
+                });
+            }, 1000);
+        };
+
+        request.onerror = function(evt) {
+            if(evt.target && evt.target.error) {
+                setTimeout(function(){reject(evt.target.error)}, 100);
+                return;
+            }
+            setTimeout(function() {
+                reject('blocked Database');
+            }, 1000);
+        }
+        request.onblocked = function(evt) {
+            setTimeout(function() {
+                resetDb(db);
+            }, 1000);
+        }
+    })
+}
+
+wizvera.wizveraIndexedDB = {
+    openIndexedDb: openIndexedDb,
+    get: get,
+    add: add,
+    put: put,
+    remove: remove,
+    resetDb: resetDb
+};
+})(window);
+(function(GLOBAL) {
+"use strict";
+"cloudUtil";
+
+var wizvera = GLOBAL.wizvera;
+var wizveraDB = wizvera.wizveraIndexedDB;
+var kryptos = wizvera.kryptos;
+var util = kryptos.pinsign_connected_util;
+// var rsa = kryptos.rsa;
+
+var usingIndexedDb = wizvera.useIndexedDb;
+
+// for test;
+var publicKey;
+var privateKey;
+
+var _crypto = window.crypto || window.msCrypto;
+var _subtle = _crypto.subtle || _crypto.webkitSubtle;
+var db;
+
+var keyValue = 'aesKey';
+// var connectedID = 'CONNECTEDID';
+var connectedID;
+
+wizveraDB.openIndexedDb('WIZVERA Connected', ['ConnectedKeyStorage']).then(function(resDB) {
+    db = resDB;
+    // setTimeout(function() {
+    //     wizveraDB.remove(db, keyValue);
+    // }, 1000);
+}).catch(function(err) {
+    console.error(err);
+});
+
+function generateKey(algo, isExport, uses) {
+    try {
+        return _subtle.generateKey(algo, isExport, uses).then(function(key) {
+            return key;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    } catch(e) {
+        return new Promise(function(resolve, reject) {
+        var test = _subtle.generateKey(algo, isExport, uses);
+            test.oncomplete = function() {
+                resolve(test.result)
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+}
+
+function importKey(type, key, algo, exportable, usage) {
+// "raw", keyArrayBuffer, {name:"HMAC", hash:{name:"SHA-256"}}, false, ["sign"]
+    try {
+        return _subtle.importKey(type, key, algo, exportable, usage).then(function(result) {
+            return result;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    } catch(e) {
+        return new Promise(function(resolve, reject) {
+            var test = _subtle.importKey(type, key, algo, exportable, usage);
+            test.oncomplete = function() {
+                resolve(test.result)
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+}
+
+function exportKey(type, key) {
+    try {
+        return _subtle.exportKey(type, key).then(function(result) {
+            return result;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    } catch(e) {
+        return new Promise(function(resolve, reject) {
+            var test = _subtle.exportKey(type, key);
+            test.oncomplete = function() {
+                var result = util.textDecode(test.result);
+                resolve(JSON.parse(result));
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+    
+}
+
+function sign(algo, key, data) {
+    try {
+        return _subtle.sign(algo, key, data).then(function(signedData) {
+            return signedData;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    }catch(e){
+        return new Promise(function(resolve, reject) {
+            var test = _subtle.sign(algo, key, data);
+            test.oncomplete = function() {
+                resolve(test.result)
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+    }
+
+function digest(algo, data) {
+    try {
+        return _subtle.digest(algo, data).then(function(digestData) {
+            return digestData;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    } catch(e) {
+        return new Promise(function(resolve, reject) {
+            var test = _subtle.digest(algo, data);
+            test.oncomplete = function() {
+                resolve(test.result)
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+    });
+}
+}
+
+function encrypt(algo, key, encryptedData) {
+    try {
+        return _subtle.encrypt(algo, key, encryptedData).then(function(decryptedData) {
+            return decryptedData;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    } catch(e) {
+        return new Promise(function(resolve, reject) {
+            var test = _subtle.encrypt(algo, key, encryptedData);
+            test.oncomplete = function() {
+                resolve(test.result)
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+}
+
+function decrypt(algo, key, encryptedData) {
+    try {
+        return _subtle.decrypt(algo, key, encryptedData).then(function(decryptedData) {
+            return decryptedData;
+        }).catch(function(err) {
+            Promise.reject(new Error('error', 'message'));
+        });
+    }catch(e){
+        return new Promise(function(resolve, reject) {
+            var test = _subtle.decrypt(algo, key, encryptedData);
+            test.oncomplete = function() {
+                resolve(test.result)
+            };
+            test.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+}
+
+function generateHeader(signType) {
+    var alg = signType || "RS256";
+    var header = {
+        "alg":alg
+        // "typ":"JWT"
+    }
+    return header;
+    }
+
+function makeJws(signData, key) {
+    // var signDataArray = util.textEncode(signData);
+    var signDataArray = util.textEncode(signData);
+    return sign({name:"RSASSA-PKCS1-v1_5", hash:{name:"SHA-256"}}, key, signDataArray).then(function(signature) {
+        return signData + '.' + util.base64UrlEncode(util.arrayBufferToBase64(signature));
+    });
+}
+
+function makeJwsHmac(signData, key) {
+    // var signDataArray = util.textEncode(signData);
+    var signDataArray = util.textEncode(signData);
+    return sign({name:"HMAC", hash:{name:"SHA-256"}}, key, signDataArray).then(function(signature) {
+        return signData + '.' + util.base64UrlEncode(util.arrayBufferToBase64(signature));
+    });
+}
+
+function makeHeaderAndPayload(payload, signType) {
+
+    var header = JSON.stringify(generateHeader(signType));
+    if(typeof payload === 'object') {
+        payload = JSON.stringify(payload);
+    }
+    var signTarget = "";
+    signTarget += util.base64UrlEncode(util.arrayBufferToBase64(util.textEncode(header).buffer)) + '.';
+    signTarget += util.base64UrlEncode(util.arrayBufferToBase64(util.textEncode(payload).buffer));
+
+    return signTarget;
+}
+
+function sha256(data, i) {
+    if(usingIndexedDb) {
+        if(typeof data == 'string') {
+            data = util.textEncode(data);
+        }
+        if(i == 1 || !i)
+            return digest({name:'SHA-256'}, data);
+        else
+            return digest({name:'SHA-256'}, data).then(function(hashed) {
+                return sha256(hashed, --i);
+            });
+    } else {
+        if(!i)
+            i = 1;
+
+        //jhkoo77 fix
+        if(PINsign.Crypto.Util.sha256 !== undefined) {
+            return new Promise(function(resolve,reject){
+                var res = PINsign.Crypto.Util.sha256(data,i);
+                return resolve(util.hexToArrayBuffer(res));
+            });
+
+        }
+        return new Promise(function(resolve, reject) {
+            var rval = data;
+            for(var j=0;j<i;j++) {
+                rval = sha256.create().update(rval).digest().data;
+            }
+            resolve(util.hexToArrayBuffer(util.bytesToHex(data)));
+        });
+    }
+}
+
+function dumpKey(name,keyObj) {
+    /*
+    try {
+    window.crypto.subtle.exportKey("jwk",keyObj)
+        .then(function(jwk){
+            console.log(name,jwk);
+        });
+    }catch(e) {
+        var res = window.crypto.subtle.exportKey("jwk",keyObj);
+        res.oncomplete = function() {
+            var key = util.textDecode(res.result);
+            console.log(name,JSON.parse(key),key);
+        }
+    }
+    */
+
+}
+function dumpKeyPair(keyObj) {
+    var keyPair = {};
+    dumpKey("publicKey",keyObj.publicKey);
+    dumpKey("privateKey",keyObj.privateKey);
+}
+var cloudUtil = {
+    generateKey: function(isSave) {
+        console.log('generate key');
+        return generateKey(
+            {
+                name: "RSASSA-PKCS1-v1_5",
+                modulusLength: 2048,
+                publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+                hash: {name: "SHA-256"}
+            },
+            true,
+            ["sign", "verify"]
+        ).then(function(keyData) {
+            console.log('generate key done');
+            dumpKeyPair(keyData);
+            if(isSave) {
+                wizveraDB.put(db, keyValue, keyData.privateKey).catch(function(error) {
+                    if(error.code == 0 && error.message.indexOf('already exist') > -1) {
+                        return wizveraDB.put(db, keyValue, keyData.privateKey).catch(function(error) {
+                            profile.log('cloud generate failed');
+                        });
+                    }
+                });
+            } else {
+                privateKey = keyData.privateKey._key || keyData.privateKey;
+            }
+            publicKey = keyData.publicKey_key || keyData.publicKey;
+            return keyData.privateKey._key || keyData.privateKey;
+        });
+    },
+    getPublicKeyJwk: function() {
+        return exportKey("jwk", publicKey).catch(function(err) {
+            return this.generateKey();
+        }.bind(this)).then(function(keyData) {
+            var newKey = util.removeJwk(keyData);
+            return newKey;
+        }).catch(function(err) {
+            console.log('what?!?!', err);
+        });
+    },
+
+    getPrivateKey: function(isSave) {
+        if(this.getPubkId() == undefined) {
+            // pubkId가 없는 경우 generateKey.
+            return this.generateKey(isSave);
+        } else {
+            if(privateKey) {
+                console.log('getPrivateKey from memory');
+                return Promise.resolve(privateKey._key || privateKey);
+        } else {
+                return wizveraDB.get(db, keyValue).then(function(privateKey) {
+                    console.log('getPrivateKey from db');
+                    dumpKey("privateKey",privateKey);
+                    return privateKey;
+            }.bind(this)).catch(function(err) {
+                    // 키가 없는 경우 generateKey.
+                    console.log('getPrivateKey from generateKey');
+                    return this.generateKey(isSave);
+                }.bind(this));
+                }
+        }
+    },
+
+    signToJws: function(payload, isSave) {
+        return cloudUtil.getPrivateKey(isSave).then(function(privateKey) {
+                var signData = makeHeaderAndPayload(payload, 'RS256');
+                return makeJws(signData, privateKey);
+            });
+    },
+
+    signToConnect: function(payload, keyStr) {
+        console.log('signToConnect : ', payload);
+        var keyArrayBuffer = util.textEncode(keyStr);
+        console.log(util.arrayBufferToBase64(keyArrayBuffer));
+        return importKey("raw", keyArrayBuffer, {name:"HMAC", hash:{name:"SHA-256"}}, false, ["sign"]).then(function(hmacKey) {
+            var signData = makeHeaderAndPayload(payload, 'HS256');
+            return makeJwsHmac(signData, hmacKey);
+        }).catch(function(err) {
+            console.log('signToConnect error : ', err);
+            console.error(err);
+        });
+    },
+
+    getPubkId: function() {
+        var id = connectedID || localStorage.getItem('CONNECTEDID'); //jhkoo77 fix
+        if(id == "")
+            return undefined;
+        return id;
+    },
+
+    setPubkId: function(pubkid, isSave) {
+        if(isSave) {
+            localStorage.setItem('CONNECTEDID', pubkid);
+        }
+
+        connectedID = pubkid;
+    },
+
+    removePubkId: function() {
+        localStorage.removeItem('CONNECTEDID');
+        publicKey = undefined;
+        privateKey = undefined;
+        connectedID = undefined;
+    },
+
+    getSharedPassword: function(name, fingerprint, password) {
+        var passwordSet = name+fingerprint+password;
+        return sha256(passwordSet, 1024).then(util.arrayBufferToBase64).then(util.base64UrlEncode);
+    },
+
+    getSharedSecret: function(password, secretList) {
+        var keyTarget = '';
+        secretList.forEach(function(target, i, array) {
+            keyTarget += target;
+        });
+        keyTarget += password;
+        return sha256(keyTarget);
+    },
+
+    generateEncryptionKey: function(password, secretList, iv) {
+        var c = new Uint8Array([0x00,0x00,0x00,0x01]);
+
+        return this.getSharedSecret(password, secretList).then(function(sharedSecret) {
+            var digest = new Uint8Array(sharedSecret.byteLength+c.byteLength+iv.byteLength);
+            var length = 0;
+            digest.set(new Uint8Array(sharedSecret), length);
+            length += sharedSecret.byteLength;
+            digest.set(c, length);
+            length += c.byteLength;
+            digest.set(iv, length);
+            return sha256(digest);
+        });
+    },
+
+    // 암복호화, 현재는 암호화나 복호화 시에 ArrayBuffer로 리턴.
+    encryptData: function(secretList, password, data) {
+        var iv = _crypto.getRandomValues(new Uint8Array(16));
+
+        return this.generateEncryptionKey(password, secretList, iv).then(function(keyArrayBuffer) {
+            return importKey('raw', keyArrayBuffer, {name:'AES-CBC'}, false, ['encrypt']).then(function(aesKey) {
+                return aesKey;
+            });
+        }).then(function(aesKey) {
+            return encrypt({name:'AES-CBC', iv: iv}, aesKey, util.textEncode(data));
+        }).then(function(encryptedDataArrayBuffer) {
+            var finish = new Uint8Array(iv.byteLength+encryptedDataArrayBuffer.byteLength);
+            finish.set(iv, 0);
+            finish.set(new Uint8Array(encryptedDataArrayBuffer), 16);
+            return util.base64UrlEncode(util.arrayBufferToBase64(finish.buffer));
+        });
+    },
+    decryptData: function(secretList, password, encryptedDataAndIvB64) {
+        console.log('secretList : ', secretList, password);
+        var encryptedDataAndIvArray = util.base64ToArrayBuffer(util.base64UrlDecode(encryptedDataAndIvB64));
+        var iv = new Uint8Array(encryptedDataAndIvArray.slice(0, 16));
+        var encryptedData = new Uint8Array(encryptedDataAndIvArray.slice(16, encryptedDataAndIvArray.byteLength));
+
+        return this.generateEncryptionKey(password, secretList, iv).then(function(keyArrayBuffer) {
+            return importKey('raw', keyArrayBuffer, {name:'AES-CBC'}, false, ['decrypt']).then(function(aesKey) {
+                return aesKey;
+            });
+        }).then(function(aesKey) {
+            return decrypt({name:'AES-CBC', iv: iv}, aesKey, encryptedData);
+        }).then(function(decryptedDataArrayBuffer) {
+            return util.textDecode(decryptedDataArrayBuffer);
+        });
+    }
+};
+
+wizvera.cloudUtil = cloudUtil;
+    wizvera.cloudUtil.makeHeaderAndPayload = makeHeaderAndPayload;
+    wizvera.cloudUtil.makeJws = makeJws;
+    wizvera.cloudUtil.generateHeader = generateHeader;
+
+})(window);
+(function(GLOBAL) {
+    "use strict";
+    "cloudStore";
+    var wizvera = GLOBAL.wizvera;
+    var $ = GLOBAL.jQuery;
+// var k = wizvera.kryptos;
+// var util = k.util;
+    var cloudUtil = wizvera.cloudUtil;
+    var delfinoWebStorage = wizvera.delfinoWebStorage;
+
+//var mainServerUrl = 'https://192.168.0.124:3000/server0';//'0번서버 주소';
+var mainServerUrl = 'https://server0.wizvera.com/server0';
+
+var serverInfo = [
+    'https://apple.wizvera.com',
+    'https://banana.wizvera.com',
+    'https://cherry.wizvera.com'
+];
+
+    var magicWord = '블라블라';
+
+    function phoneValidator(phone) {
+        /* 전화번호 유효성 검사 */
+        /* 전화번호 형식이 맞을 때 true */
+        /* xxx-xxxx-xxxx */
+        /* xxxx-xxx-xxxx */
+        /* xxx-xxx-xxxx  */
+        /* xxxxxxxxxxx  */
+        /* xxxxxxxxxx  */
+    return phone.match(/[0-9]{3,4}[-]{0,1}[0-9]{3,4}[-]{0,1}[0-9]{4}/);
+    }
+
+    $.support.cors = true;
+
+    var SMS_ERROR_BASE = 2000;
+    var CREDENTIAL_ERROR_BASE = 1900;
+    var REGISTER_BASE = 1600;
+    var LOGIN_BASE = 1700;
+    var PERMISION_BASE = 1800;
+    var DATA_BASE = 2100;
+    var CIPHER_BASE = 2200;
+    var DEFAULT_BASE = 1500;
+
+    var errorCode = {
+        ASSERTION_ERROR: DEFAULT_BASE + 1,
+        TX_NOT_FOUND: REGISTER_BASE + 1,
+        TX_EXPIRED: REGISTER_BASE + 2,
+        WAIT_FOR_USER_RESPONSE: REGISTER_BASE + 3,
+        SMS_ERROR: SMS_ERROR_BASE + 1,
+        NOT_ALLOWED: PERMISION_BASE + 1,
+        AUTHORIZATION_FAIL: 1403,
+        NOT_EXIST_NONCE: LOGIN_BASE + 5,
+        NOT_EXIST_PUBKID: LOGIN_BASE + 6,
+        NOT_READY_PUBKID: LOGIN_BASE + 7,
+        NONCE_NOT_MATCH: LOGIN_BASE + 8,
+        CREDENTIAL_ERROR: CREDENTIAL_ERROR_BASE + 1,
+        PASSCODE_WRONG: CREDENTIAL_ERROR_BASE + 2,
+        SIGNATURE_ERROR: CREDENTIAL_ERROR_BASE + 4,
+        SERVER_SIGNATURE_ERROR: CREDENTIAL_ERROR_BASE + 5,
+        DATA_NOT_READY: DATA_BASE + 1,
+        DATA_INTEGRITY_ERROR: DATA_BASE + 2,
+        INVALID_ACCESS: DATA_BASE + 3,
+        ENCRYPT_ERROR: CIPHER_BASE + 1,
+        DECRYPT_ERROR: CIPHER_BASE + 2,
+    };
+
+    var basicProtocol = $.extend({}, errorCode, {
+        // 코드 정의 부분.
+        // normal
+        OK: 0,
+
+        acceptedCode: function (accepted, code) {
+            for (var i = 0; i < accepted.length; i++) {
+                if (this[accepted[i]] == code)
+                    return true;
+            }
+            return false;
+        },
+
+        postData: function (url, data, type, accepted) {
+            return new Promise(function (resolve, reject) {
+                if ('object' !== typeof data)
+                    return;
+
+                if (!type || Array.isArray(type)) {
+                    accepted = type;
+                    type = 'POST';
+                }
+
+                accepted = accepted || ['OK'];
+
+                var headerName = 'X-Wizvera-SID';
+
+                var options = {
+                    url: url,
+                    type: type,
+                    contentType: 'application/json;charset=utf-8',
+                    cors: true,
+                    cache: false,
+                    xhrFields: {withCredentials: true},
+                    headers: {},
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: (function (res, text, request) {
+                        // var sessionValue = request.getResponseHeader(headerName) || '';
+                        // if(sessionValue) {
+                        //     console.log('getHeader!!', this.serverName);
+                        //     this.sessionValue = sessionValue;
+                        // }
+                        if (this.acceptedCode(accepted, res.code))
+                            resolve(res);
+                        else if (res.code == errorCode.ASSERTION_ERROR && res.code == 'login first') {
+                            this.postData(url, data, type, accepted).then(function (res) {
+                                resolve(res);
+                            }).catch(function (err) {
+                                reject(err);
+                            });
+                        } else {
+                            reject(res);
+                        }
+                    }).bind(this),
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        reject(jqXHR.responseJSON);
+                    }
+                };
+
+                $.ajax(options);
+            }.bind(this));
+        }
+    });
+
+    var serverLoginProtocol = $.extend({}, basicProtocol, {
+        serverUrl: null,
+        serverNo: null,
+    certType: undefined,
+        loginNonceUrl: null,
+        requestNonceUrl: null,
+        requestLoginUrl: null,
+        loginNonce: function () {
+            // 수정 완료.
+            var pubkId = cloudUtil.getPubkId();
+            return this.postData(this.serverUrl + '/' + this.loginNonceUrl, {pubkId: pubkId}, ['OK', 'NOT_EXIST_PUBKID']).then(function (res) {
+                // return this.postData('https://192.168.0.92/delfino4html/testResult.jsp', {pubkId: pubkId}, ['OK', 'NOT_EXIST_PUBKID']).then(function(res) {
+                if (res.code == this.OK) {
+                    return {nonce: res.nonce};
+                } else if (this.needRegister(res.code)) {
+                    return this.requestToken().then(function (res) {
+                        var token = res.jws;
+                        return {token: res.jws};
+                    }).catch(function (res) {
+                        // 토큰 요청 실패
+                        return res;
+                    });
+                } else {
+                    throw new Error('Unexpected Error code in getNonce on server' + this.serverNo);
+                }
+            }.bind(this)).catch(function (res) {
+                throw new Error('Unexpected Error in getNonce on server' + this.serverNo);
+                // nonce 요청 실패;
+            }.bind(this));
+        },
+        loginRequest: function () {
+            // 수정 완료.
+            return this.loginNonce().then(function (res) {
+                if (res.error) {
+                    throw new Error('failed to getNonce ' + this.serverName);
+                }
+
+                if (this.certType)
+                    res.certType = this.certType;
+
+                return res;
+            }.bind(this)).then(cloudUtil.signToJws).then(function (jws) {
+                var postData = {jws: jws};
+                return this.postData(this.serverUrl + '/' + this.requestLoginUrl, postData).then(function (res) {
+                    // 로그인 성공
+                    console.log(res);
+                    return res;
+                }).catch(function (res) {
+                throw new Error('Connected login failed');
+                    // 로그인 실패;
+                });
+            }.bind(this));
+        },
+        requestNonceForEncDec: function (isEncData) {
+            // 수정 완료.
+            var sendUrl = this.serverUrl + '/' + this.requestNonceUrl;
+            return this.postData(sendUrl, {}, ['OK']).then(function (res) {
+                return res.nonce;
+            }).catch(function (err) {
+                throw new Error('Unexpected Error in requestNonceForEncDec');
+            });
+        },
+        needRegister: function () {
+            // 상속 때 리턴 값 설정.
+            throw new Error('Define this function.(needRegister)');
+        },
+        requestToken: function () {
+            // saveServerProtocol에만 적용.
+            throw new Error('Define this function.(requestToken)');
+        }
+    });
+
+    var saveServerProtocol = {};
+
+    function generateServerInfo(saveServerInfo) {
+        for (var i = 0; i < saveServerInfo.length; i++) {
+////////////////////////////////////////////
+            var pushObj = $.extend({}, serverLoginProtocol, {
+        serverUrl: saveServerInfo[i]+'/serverN',
+                serverNo: i + 1,
+        serverName: saveServerInfo[i],
+                loginNonceUrl: 'loginNonce',
+                requestNonceUrl: 'requestServerEncData',
+                requestLoginUrl: 'loginRequest',
+                uploadServerEncDataUrl: 'uploadServerEncData',
+                deleteServerEncDataUrl: 'deleteServerEncData',
+
+                requestToken: function (nonce) {
+                    // 수정 완료.
+                    var pubkId = cloudUtil.getPubkId();
+                    return this.postData(mainServerUrl + '/requestToken', {pubkId: pubkId}, ['OK']).then(function (res) {
+                        console.log(res);
+                        return res;
+                    }).catch(function (err) {
+                        console.error(err);
+                    });
+                },
+                requestServerSecret: function (fingerprint, password) {
+                    // 수정 완료.
+                    console.log(this.serverName + 'requestServerSecret');
+                    return cloudUtil.getSharedPassword(this.serverName, fingerprint, password).then(function (sharedPassword) {
+                return this.postData(this.serverUrl+'/requestServerSecret', {fingerprint: fingerprint, sharedPassword: sharedPassword}, ['OK'])
+                    }.bind(this)).then(function (res) {
+                        return res.serverSecret;
+                    });
+                },
+
+                requestServerEncData: function (fingerprint, password) {
+                    // 수정 완료.
+                    console.log(this.serverName + 'requestServerEncData');
+                    return Promise.all([
+                        this.requestNonceForEncDec(true),
+                        cloudUtil.getSharedPassword(this.serverName, fingerprint, password)
+                    ]).then(function (resArray) {
+                        var nonce = resArray[0], sharedPassword = resArray[1];
+                        var payload = {
+                            nonce: nonce,
+                            fingerprint: fingerprint
+                        };
+                        return cloudUtil.signToConnect(payload, sharedPassword);
+                    }).then(function (jws) {
+                        var postData = {jws: jws};
+                        return this.postData(this.serverUrl + '/' + this.requestNonceUrl, postData, ['OK']).catch(function (err) {
+                            return {error: err};
+                            // console.error(err);
+                            // throw new Error('Unexpected Error in requestServerEncData, requestEnc');
+                        });
+                    }.bind(this)).then(function (res) {
+                        if (res.error) {
+                            return res;
+                        }
+                        return [res.serverEncData, res.serverSecret];
+                    }).catch(function (err) {
+                        console.error(err);
+                    });
+                },
+                uploadServerEncData: function (payload, fingerprint, password) {
+                    console.log(this.serverName + 'uploadServerEncData');
+                    return cloudUtil.getSharedPassword(this.serverName, fingerprint, password).then(function (sharedPassword) {
+                        console.log('sign : ', JSON.stringify(payload), sharedPassword);
+                        return cloudUtil.signToConnect(payload, sharedPassword);
+                    }).then(function (jws) {
+                        var postData = {
+                            jws: jws
+                        };
+                        return this.postData(this.serverUrl + '/' + this.uploadServerEncDataUrl, postData, ['OK']).catch(function (err) {
+                            throw err;
+                        })
+                    }.bind(this))
+                },
+
+                deleteServerEncData: function (fingerprint) {
+                    console.log(this.serverName + 'deleteServerEncData');
+                    var postData = {
+                        fingerprint: fingerprint
+                    };
+
+                    return this.postData(this.serverUrl + '/' + this.deleteServerEncDataUrl, postData, ['OK']).catch(function (err) {
+                        return {error: err};
+                    });
+                },
+
+                needRegister: function (code) {
+                    return code == this.NOT_EXIST_PUBKID;
+                },
+            });
+
+    saveServerProtocol[saveServerInfo[i]] = pushObj;
+///////////////////////////
+        }
+    }
+
+    var mainServerProtocol = $.extend({}, serverLoginProtocol, {
+        serverUrl: mainServerUrl,
+        serverNo: 0,
+        serverName: 'server0',
+    certType: 'PINsign',
+        loginNonceUrl: 'loginNonce',
+        requestNonceUrl: 'requestServerDecrypt',
+        requestLoginUrl: 'loginRequest',
+        deleteCertInfoUrl: 'deleteCertInfo',
+        registerRequest: function (phone, name, isSave, confirmCodeHandler) {
+            // 수정 완료.
+            if (!( phone && name && phoneValidator(phone) ))
+            return Promise.reject({error:{code:-1500}});
+            var payload = {
+                name: name,
+                phone: phone
+                // signature: signature
+            };
+
+            return cloudUtil.signToJws(payload, isSave).then(function (jws) {
+                return cloudUtil.getPublicKeyJwk().then(function (publicKey) {
+                    return [jws, publicKey];
+                });
+            }).then(function (resArray) {
+                var jws = resArray[0], publicKey = resArray[1]
+                var postData = {
+                    jwk: publicKey,
+                    jws: jws
+                };
+                // debugger;
+                return this.postData(mainServerUrl + '/registerRequest', postData, ['OK'])
+            }.bind(this)).then(function (res) {
+                // 등록 성공.
+                console.log('confirmCode : ', res.confirmCode);
+                confirmCodeHandler && confirmCodeHandler(res.confirmCode);
+                return res.txId;
+            }.bind(this)).catch(function (res) {
+                // 등록 실패
+                var message = res.error || res.message;
+                if (!message) {
+                    message = JSON.stringify(res);
+                }
+                throw new Error(message);
+            }.bind(this)).then(function (txId) {
+                return this.registerStatus(txId, isSave);
+            }.bind(this));
+        },
+
+        // confirm: function(){} phone
+        registerStatus: function (txId, isSave) {
+            // 수정 완료.
+            return new Promise(function (resolve, reject) {
+                var count = 0;
+                var intervalId = setInterval(function () {
+                    this.postData(mainServerUrl + '/registerStatus', {txId: txId}, ['OK', 'WAIT_FOR_USER_RESPONSE']).then(function (res) {
+                        if (res.code == this.OK) {
+                            ///////////////////////
+                            // result : pubkId;
+                            //////////////////////
+                            console.log(res.pubkId);
+                            cloudUtil.setPubkId(res.pubkId, isSave);
+                            console.log('register complete : ', res);
+                            clearInterval(intervalId);
+                            return resolve(res);
+                            // return res.pubkId;
+                        } else if (res.code == this.WAIT_FOR_USER_RESPONSE) {
+                            count++;
+                            if (count > 150) {
+                                clearInterval(intervalId);
+                                return reject('interval over 300 sec');
+                            }
+                        } else {
+                            reject(new Error('Unexpected Error in registerStatus'));
+                        }
+                    }.bind(this)).catch(function (res) {
+                        // 체크 실패;
+                        count++;
+                        console.log('check failed ', count);
+                    });
+                }.bind(this), 2000);
+            }.bind(this));
+        },
+
+        requestServerEncrypt: function (serverInfoAndSecretArray, certInfo, p12, password) {
+            console.log(this.serverName + 'requestServerEncrypt');
+            var fingerprint = certInfo.fingerprint;
+            var serverList = serverInfoAndSecretArray.info;
+            var serverSecretArray = serverInfoAndSecretArray.secret;
+            return cloudUtil.getSharedPassword(this.serverName, fingerprint, password).then(function (sharedPassword) {
+                return cloudUtil.encryptData(serverSecretArray, password, p12).catch(function (err) {
+                    throw {error: err};
+                }).then(function (encData) {
+                    var sendData = {
+                        fingerprint: fingerprint,
+                        sharedPassword: sharedPassword,
+                        certType: this.certType,
+                        certInfo: certInfo,
+                        serverList: serverList,
+                        encData: encData
+                    };
+                    return this.postData(mainServerUrl + '/requestServerEncrypt', sendData, ['OK', 'WAIT_FOR_USER_RESPONSE']).then(function (res) {
+                        if (res.error) {
+                            throw res.error;
+                        }
+                        return res.serverEncDataPack;
+                    }).catch(function (res) {
+                        console.log('error on requestServerEncrypt');
+                        throw res.error;
+                    });
+                }.bind(this));
+            }.bind(this)).catch(function (err) {
+                throw err;
+            });
+        },
+
+        requestServerDecrypt: function (serverEncDataPack, fingerprint, password) {
+            // 수정 필요.
+            console.log(this.serverName + ' requestServerDecrypt');
+            return Promise.all([
+                this.requestNonceForEncDec(),
+                cloudUtil.getSharedPassword(this.serverName, fingerprint, password)
+            ]).then(function (resArray) {
+                var nonce = resArray[0], sharedPassword = resArray[1];
+                var payload = {
+                    nonce: nonce,
+                    fingerprint: fingerprint,
+                    serverEncDataPack: serverEncDataPack
+                };
+                return cloudUtil.signToConnect(payload, sharedPassword);
+            }).then(function (jws) {
+                var postData = {jws: jws};
+                console.log('jws : ', jws);
+                return this.postData(mainServerUrl + '/' + this.requestNonceUrl, postData, ['OK']).catch(function (err) {
+                    return {error: err};
+                });
+            }.bind(this)).then(function (res) {
+                console.log('encData : ', res);
+                if (res.error) {
+                    return res;
+                }
+                return res.encData;
+            });
+        },
+
+        // serverList = [{name:'serverN', url: 'https://....'}, ...];
+    // serverList = ['https://apple.wizvera.com', 'https://banana.wizvera.com',...];
+        upload: function (serverList, certInfo, p12, password) {
+            console.log(this.serverName + 'upload');
+            if (!serverList || serverList.length < 1) {
+                serverList = saveServerInfo.slice(0);
+            }
+
+            var fingerprint = certInfo.fingerprint;
+
+            var prms = [];
+            var serverNameList = [];
+            for (var i = 0; i < serverList.length; i++) {
+            var serverName = serverList[i];
+                var serverProtocol = saveServerProtocol[serverName];
+
+                serverNameList.push(serverName);
+                if (!serverProtocol) {
+                    console.log('no server protocol');
+                    // 서버 추가 가능성 고려.
+                }
+
+                prms.push(serverProtocol.requestServerSecret(fingerprint, password));
+                // var serverName = serverList[i].name;
+            }
+
+            return Promise.all(prms).then(function (secretArray) {
+                var serverInfoAndSecretArray = {
+                    info: serverNameList,
+                    secret: secretArray
+                };
+                return this.requestServerEncrypt(serverInfoAndSecretArray, certInfo, p12, password).catch(function (err) {
+                    console.log('error on requestServerEncrypt in upload');
+                    console.log(err);
+                });
+            }.bind(this)).then(function (serverEncDataPack) {
+                var prms = [];
+                console.log(serverEncDataPack);
+                serverNameList.map(function (target, i) {
+                    var jws = serverEncDataPack[target].jws;
+                    var payload = {
+                        fingerprint: fingerprint,
+                        serverEncData: jws
+                    };
+
+                    prms.push(saveServerProtocol[target].uploadServerEncData(payload, fingerprint, password));
+                });
+                return Promise.all(prms).then(function (resArray) {
+                if(resArray.every(function(target){return target && target.code == 0})) {
+                        return {code: 0};
+                    } else {
+                        return {error: 'some server failed upload to saveServerProtocol'};
+                    }
+                }).catch(function (err) {
+                    console.log('error on somewhere uploadServerEncData in saveServerProtocol');
+                    console.error(err);
+                });
+            }).catch(function (err) {
+                console.log(err);
+                throw err;
+            });
+        },
+
+        // serverList = 'server1,server2, ...';
+        download: function (serverList, fingerprint, password) {
+        var serverNameArray = serverList;//serverList.split(',');
+            var prms = [];
+            try {
+                for (var i = 0; i < serverNameArray.length; i++) {
+                    prms.push(saveServerProtocol[serverNameArray[i]].requestServerEncData(fingerprint, password))
+                }
+            } catch (e) {
+                return Promise.reject(e);
+            }
+            return Promise.all(prms).catch(function (err) {
+                debugger;
+                console.log(err);
+                return err;
+            }).then(function (serverEncDataAndSecret) {
+                var serverEncDataPack = {};
+                var serverSecretList = [];
+                console.log(serverEncDataAndSecret)
+                var res;
+                serverNameArray.map(function (target, i) {
+                    if (serverEncDataAndSecret[i].error) {
+                        res = serverEncDataAndSecret[i];
+                        return;
+                    }
+                    serverEncDataPack[target] = {jws: serverEncDataAndSecret[i][0]};
+                    serverSecretList[i] = serverEncDataAndSecret[i][1]
+                });
+                if (res && res.error) {
+                    var newError = {
+                        code: -4008,
+                        message: ''
+                    };
+                    return {error: newError};
+                }
+                console.log(serverEncDataPack);
+                console.log(serverSecretList);
+                return this.requestServerDecrypt(serverEncDataPack, fingerprint, password).then(function (encData) {
+                    if (encData.error) {
+                        return encData;
+                    }
+
+                    return cloudUtil.decryptData(serverSecretList, password, encData).catch(function (err) {
+                        return {error: err};
+                    });
+                });
+            }.bind(this)).then(function (p12) {
+            //console.log(p12);
+                return p12;
+            });
+        },
+
+        deleteCertInfo: function (serverList, fingerprint) {
+            var _this = this;
+            var serverNameArray = serverList.split(',');
+            var prms = [];
+
+            var postData = {
+                fingerprint: fingerprint
+            };
+
+            return this.postData(this.serverUrl + '/' + this.deleteCertInfoUrl, postData, ['OK']).then(function (res) {
+                try {
+                    for (var i = 0; i < serverNameArray.length; i++) {
+                        prms.push(saveServerProtocol[serverNameArray[i]].deleteServerEncData(fingerprint))
+                    }
+                } catch (e) {
+                    throw {error: {code: 55555, message: 'Error on deleteServerEncData'}};
+                }
+                return Promise.all(prms).bind(this).then(function (resArray) {
+                    if (!Array.isArray(resArray)) {
+                        throw {error: {code: 66666, message: 'Error on deleteServerEncData'}};
+                    }
+                    for (var i = 0; i < resArray.length; i++) {
+                        if (!resArray[i] || resArray[i].code != this['OK']) {
+                            debugger;
+                        throw {error: {code:77777, message: 'Error on deleteServerEncData on '+serverNameArray[i]}}
+                        }
+                    }
+                    return res;
+            }).bind(this);;
+            }.bind(this))
+        },
+
+        needRegister: function () {
+            return false;
+        }
+    });
+
+    var connectedHelper = {
+        getCertInfosForG4: function (certInfos) {
+            var newCertInfos = [];
+            for (var i = 0; i < certInfos.length; i++) {
+                var certInfo = certInfos[i];
+                var newCertInfo = {};
+                for (var key in certInfo.certInfo) {
+                    newCertInfo[key] = certInfo.certInfo[key];
+                }
+                for (var key in certInfo) {
+                    if (key != "certInfo")
+                        newCertInfo[key] = certInfo[key];
+                }
+                newCertInfos.push(newCertInfo);
+/*
+                var targetSubject = newCertInfo.subject.split(',');
+                for (var j = 0; j < targetSubject.length; j++) {
+                    var name = targetSubject[j].split('=');
+                    if (name.length != 2) {
+                        profile.log('error on parsing cn in Connected');
+                        break;
+                    }
+                    if (name[0].toLowerCase() == 'cn') {
+                        newCertInfo.subject = name[1];
+                        break;
+                    }
+                }
+
+                var targetIssuer = newCertInfo.issuer.split(',');
+                for (var j = 0; j < targetIssuer.length; j++) {
+                    var name = targetIssuer[j].split('=');
+                    if (name.length != 2) {
+                        profile.log('error on parsing cn in Connected');
+                        break;
+                    }
+                    if (name[0].toLowerCase() == 'cn') {
+                        newCertInfo.issuer = name[1];
+                        break;
+                    }
+                }
+            */
+            }
+
+            return newCertInfos;
+        },
+        setup: function (inputInfo, done) {
+            var pubkId = cloudUtil.getPubkId();
+            console.log(inputInfo);
+            try {
+                inputInfo = JSON.parse(inputInfo);
+        } catch(e) {}
+        serverInfo = inputInfo;
+            generateServerInfo(serverInfo);
+
+            if (pubkId) {
+                mainServerProtocol.loginRequest().then(function (res) {
+                    console.log('mainserver login Success', res);
+                var prms = [];
+                serverInfo.map(function(target, i) {
+                    prms.push(saveServerProtocol[target].loginRequest().then(function(res) {
+                        console.log(target+' login Success', res);
+                            return res;
+                    }));
+                        })
+                return Promise.all(prms).then(function(serversRes) {
+                    if(serversRes) {
+                        console.log(serversRes);
+                    }
+                    //wizvera.delfinoWebStorage.connectedCertInfos = connectedHelper.getCertInfosForG4(res.certInfos);
+                        console.log('all server login success');
+                        done({certInfos: res.certInfos});
+                    });
+                });
+            } else {
+                done({error: {code: 3000, needRegister: true}});
+            }
+        },
+
+        turnOn: function (phone, name, isSave, confirmCodeHandler, done) {
+            return mainServerProtocol.registerRequest(phone, name, isSave, confirmCodeHandler).then(function (res) {
+                return mainServerProtocol.loginRequest().then(function (res) {
+                    console.log('mainserver login Success', res);
+                var prms = [];
+                serverInfo.map(function(target, i) {
+                    prms.push(saveServerProtocol[target].loginRequest().then(function(res) {
+                        console.log(serverInfo[i]+' login Success', res);
+                        return res;
+                    }));
+                });
+                return Promise.all(prms).then(function(serversRes) {
+                        wizvera.delfinoWebStorage.connectedCertInfos = connectedHelper.getCertInfosForG4(res.certInfos);
+                        console.log('all server login success');
+                        return done(res);
+                        // return res;
+                        // console.log('all server login success');
+                    }).catch(function (err) {
+                        return done(err);
+                    });
+                });
+            }).catch(function (err) {
+                debugger;
+                if (err && err.error) {
+                    return done(err);
+                }
+
+                return done({error: err});
+            })
+        },
+
+        turnOff: function () {
+            cloudUtil.removePubkId();
+        },
+
+        upload: function (p12, certInfo, password, done) {
+            // var serverInfo
+            // mainServerProtocol.upload([{name:'server1'}, {name:'server2'}], certInfo, p12, password).then(function(res) {
+            mainServerProtocol.upload(serverInfo, certInfo, p12, password).then(function (res) {
+                var serverList = '';
+                for (var i = 0; i < serverInfo.length; i++) {
+                serverList += serverInfo[i];
+                    if (i != serverInfo.length - 1) {
+                        serverList += ',';
+                    }
+                }
+
+                var newCertInfo = {
+                    certInfo: certInfo,
+                    serverList: serverList,
+                    fingerprint: certInfo.fingerprint
+                };
+                var newCertInfos = connectedHelper.getCertInfosForG4([newCertInfo]);
+                var originalConnectedCertInfos = wizvera.delfinoWebStorage.connectedCertInfos || [];
+                newCertInfos.concat(originalConnectedCertInfos);
+                wizvera.delfinoWebStorage.connectedCertInfos = newCertInfos;
+                done(res);
+                console.log(res);
+            })
+        },
+
+        download: function (serverList, fingerprint, password, done) {
+            mainServerProtocol.download(serverList, fingerprint, password).then(function (res) {
+                if (res.error) {
+                    return done(res);
+                }
+
+                done({p12: res});
+            }).catch(function (err) {
+                done(err);
+            })
+        },
+
+        delete: function (serverList, fingerprint, done) {
+            mainServerProtocol.deleteCertInfo('server1,server2', fingerprint).then(function (res) {
+                console.log('delete success ' + fingerprint, res);
+                wizvera.delfinoWebStorage.connectedCertInfos = connectedHelper.getCertInfosForG4(res.certInfos);
+                done({certInfos: res.certInfos});
+            }.bind(this)).catch(function (err) {
+            done({error: err});;
+                console.error('delete failed', err);
+            });
+        },
+
+        changePassword: function (fingerprint, serverList, oldPassword, newPassword, changePasswordFunc, done) {
+            mainServerProtocol.download(serverList, fingerprint, oldPassword).then(function (res) {
+                if (res.error) {
+                    var resourceString = wizvera.resourceString;
+                    var error = {code: -4008, message: resourceString['wrong_password']};
+                    return done({error: error});
+                }
+                changePasswordFunc(res, function (changeRes) {
+                    var newP12 = changeRes.p12;
+                    var certInfo = changeRes.certInfo;
+                    this.upload(newP12, certInfo, newPassword, function (res) {
+                        done(res);
+                    })
+                    console.log(res);
+                }.bind(this))
+            }.bind(this)).catch(function (err) {
+                var resourceString = wizvera.resourceString;
+                var error = {code: -4008, message: resourceString['wrong_password']};
+                done({error: error});
+            })
+
+        }
+    };
+connectedHelper.generateServerInfo = generateServerInfo;
+
+
+// var connectedCertStore = {
+//     certInfos: undefined,
+//     listCertStore : function (params, done) {
+//         var res = [{name : 'browser', exportable : true, listable : true, needCertStorePassword: false, writable : true, type : 0 }];
+//         done(res);
+//     },
+// }
+
+    wizvera.mainServer = mainServerProtocol;
+    wizvera.saveServer = saveServerProtocol;
+    wizvera.connectedHelper = connectedHelper;
+
+
+
+// var testP12 = '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';
+
+// GLOBAL.cloudTest = {
+//     register: function(isSave) {
+//         return mainServerProtocol.registerRequest('010-5021-0990', '홍석환', isSave).then(function(res) {
+//             console.log('register complete', res);
+//             return res;
+//         }).catch(function(err) {
+//             console.log('There is an error occured on server0 register.', err);
+//         });
+//     },
+//     login: function() {
+//         return mainServerProtocol.loginRequest().then(function(res) {
+//             console.log('mainserver login Success', res);
+//             return Promise.all([
+//                 saveServerProtocol['server1'].loginRequest().then(function(res) {
+//                     console.log('saveServer1 login Success', res);
+//                 }),
+//                 saveServerProtocol['server2'].loginRequest().then(function(res) {
+//                     console.log('saveServer2 login Success', res);
+//                 })
+//             ]).then(function(res) {
+//                 console.log('all server login success');
+//             });
+//         });
+//     },
+//     upload: function() {
+//         var testP12 = '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';
+//         var password = 'qqqq1111!!';
+//         var certInfo = '{"policyOID":"1.2.410.200005.1.1.4","subject":"홍석환()0003049201601201408231","notAfter":"2019-01-22 23:59:59","notBefore":"2018-01-03 00:00:00","issuer":"yessignCA Class 2","fingerprint":"8506ef9badf18ebef97af00133b848a9dbee2090"}'
+//         certInfo = JSON.parse(certInfo);
+//         mainServerProtocol.upload([{name:'server1'}, {name:'server2'}], certInfo, testP12, password).then(function(res) {
+//             console.log(res);
+//         })
+//     },
+//     download: function() {
+//         var password = 'qqqq1111!!';
+//         var fingerprint = '8506ef9badf18ebef97af00133b848a9dbee2090';
+//         mainServerProtocol.download('server1,server2', fingerprint, password).then(function(res) {
+//             console.log(res);
+//             if(res == testP12) {
+//                 console.log('It is same.');
+//             }
+//         })
+//     },
+//     downloadTest: function(fingerprint, password) {
+//         mainServerProtocol.download('server1,server2', fingerprint, password).then(function(res) {
+//             console.log(res);
+//             // GLOBAL.desktop.p12Test(res);
+//             // debugger;
+//         })
+//     },
+//     delete: function(fingerprint) {
+//         mainServerProtocol.deleteCertInfo('server1,server2', fingerprint).then(function(res) {
+//             console.log('delete success '+fingerprint, res);
+//         }).catch(function(err) {
+//             console.error('delete failed', err);
+//         });
+//     }
+// }
+})(window);
+}catch(e){}
+
+}catch(e){}
